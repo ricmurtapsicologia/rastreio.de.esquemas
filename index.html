@@ -2700,7 +2700,11 @@
                     return;
                 }
                 const encoded = encodeURIComponent(msg);
-                const url = `https://wa.me/?text=${encoded}`;
+
+                // DDI 55 (Brasil) + DDD 35 + número
+                const phone = '5535984640729';
+                const url = `https://wa.me/${phone}?text=${encoded}`;
+
                 window.open(url, '_blank');
             });
         }
