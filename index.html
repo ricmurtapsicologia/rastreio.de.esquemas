@@ -469,6 +469,7 @@
             border-radius: 999px;
             font-size: 0.72rem;
             font-weight: 500;
+            white-space: nowrap; /* evita corte de palavras como "Latente" */
         }
 
         .status-ativo {
@@ -604,8 +605,15 @@
                 justify-content: flex-end;
             }
 
+            /* deixar os três campos mais próximos no mobile */
             .form-row {
-                flex-direction: column;
+                flex-wrap: nowrap;
+                gap: 6px;
+            }
+
+            .field {
+                flex: 1 1 0;
+                min-width: 0;
             }
         }
 
@@ -933,7 +941,9 @@
         </section>
 
         <footer>
-            Desenvolvido em <strong>2025</strong> por <strong>Richelmy Murta∴, Psicólogo Clínico</strong> · Ferramenta de autoconhecimento baseada na Terapia do Esquema · Não substitui avaliação psicológica, psiquiátrica ou atendimento de emergência.
+            Mapa de Esquemas – Inventário de Padrões Emocionais · Psicólogo responsável:
+            <strong>Richelmy Murta∴, Psicólogo Clínico</strong> · WhatsApp: <strong>(35) 98464-0729</strong> · Ferramenta de
+            autoconhecimento baseada na Terapia do Esquema · Não substitui avaliação psicológica, psiquiátrica ou atendimento de emergência.
         </footer>
     </div>
 
@@ -2645,15 +2655,17 @@
 
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
-            const marginX = 56;
-            const marginTop = 72;
+            const marginX = 72;   // margens mais largas, estilo relatório clínico
+            const marginTop = 80;
             const usableWidth = pageWidth - marginX * 2;
-            const footerText = '2025 – Richelmy Murta∴, Psicólogo Clínico';
+            const footerText =
+                'Mapa de Esquemas – Inventário de Padrões Emocionais · Psicólogo: Richelmy Murta∴, Psicólogo Clínico · WhatsApp: (35) 98464-0729 · Não substitui avaliação psicológica, psiquiátrica ou atendimento de emergência.';
 
-            const lineHeight = 14;
+            const lineHeight = 16;
 
             doc.setFont('times', 'normal');
-            doc.setLineHeightFactor(1.4);
+            doc.setFontSize(12);
+            doc.setLineHeightFactor(1.5);
 
             let y = marginTop;
 
@@ -2662,7 +2674,7 @@
             const dataAp = dataInput?.value?.trim() || '';
 
             function ensureSpace(linesCount) {
-                const needed = linesCount * lineHeight + 20;
+                const needed = linesCount * lineHeight + 24;
                 if (y + needed > pageHeight - 72) {
                     doc.addPage();
                     y = marginTop;
@@ -2671,18 +2683,18 @@
 
             // Título
             doc.setFont('times', 'bold');
-            doc.setFontSize(18);
+            doc.setFontSize(16);
             doc.text('Mapa de Esquemas – Inventário de Padrões Emocionais', pageWidth / 2, y, { align: 'center' });
-            y += 26;
+            y += 30;
 
             doc.setDrawColor(180);
             doc.setLineWidth(0.6);
             doc.line(marginX, y, pageWidth - marginX, y);
-            y += 18;
+            y += 20;
 
             // Identificação
             doc.setFont('times', 'normal');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             let idLinesCount = 1;
             if (idade) idLinesCount++;
             if (dataAp) idLinesCount++;
@@ -2705,10 +2717,10 @@
             doc.setFontSize(13);
             ensureSpace(2);
             doc.text('1. Contexto e finalidade', pageWidth / 2, y, { align: 'center' });
-            y += 22;
+            y += 24;
 
             doc.setFont('times', 'normal');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             const introText =
                 'Este material é um rastreio de autoconhecimento baseado na Terapia do Esquema. ' +
                 'Ele não substitui avaliação psicológica, psiquiátrica ou atendimento de emergência. ' +
@@ -2716,17 +2728,17 @@
             let lines = doc.splitTextToSize(introText, usableWidth);
             ensureSpace(lines.length);
             doc.text(lines, marginX, y, { align: 'justify' });
-            y += lines.length * lineHeight + 18;
+            y += lines.length * lineHeight + 20;
 
             // Seção 2 – Esquemas ativos e latentes
             doc.setFont('times', 'bold');
             doc.setFontSize(13);
             ensureSpace(2);
             doc.text('2. Esquemas ativos e latentes', pageWidth / 2, y, { align: 'center' });
-            y += 22;
+            y += 24;
 
             doc.setFont('times', 'normal');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
 
             const orderedResults = Object.values(results).sort((a, b) => b.mean - a.mean);
             orderedResults.forEach(entry => {
@@ -2763,10 +2775,10 @@
             doc.setFontSize(13);
             ensureSpace(2);
             doc.text('3. Nota geral sobre EIDs e estilos de enfrentamento', pageWidth / 2, y, { align: 'center' });
-            y += 22;
+            y += 24;
 
             doc.setFont('times', 'normal');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             const eduText =
                 'Os Esquemas Iniciais Desadaptativos são padrões emocionais e cognitivos profundos que se formam ' +
                 'a partir de experiências marcantes de infância e adolescência. Eles influenciam a forma como você ' +
@@ -2777,7 +2789,7 @@
             lines = doc.splitTextToSize(eduText, usableWidth);
             ensureSpace(lines.length);
             doc.text(lines, marginX, y, { align: 'justify' });
-            y += lines.length * lineHeight + 22;
+            y += lines.length * lineHeight + 24;
 
             // Seção 4 – Psicoeducação específica dos esquemas ativos
             const ativos = orderedResults.filter(e => e.status === 'ativo');
@@ -2786,10 +2798,10 @@
                 doc.setFontSize(13);
                 ensureSpace(2);
                 doc.text('4. Psicoeducação específica dos esquemas ativos', pageWidth / 2, y, { align: 'center' });
-                y += 22;
+                y += 24;
 
                 doc.setFont('times', 'normal');
-                doc.setFontSize(11);
+                doc.setFontSize(12);
 
                 ativos.forEach(entry => {
                     const info = schemaPsycho[entry.schema.id];
@@ -2803,7 +2815,7 @@
                     y += 18;
 
                     doc.setFont('times', 'normal');
-                    doc.setFontSize(11);
+                    doc.setFontSize(12);
 
                     const blocos = [
                         info.definicao,
@@ -2820,7 +2832,7 @@
                         y += wrappedBlock.length * lineHeight + 6;
                     });
 
-                    y += 8;
+                    y += 10;
                 });
             }
 
@@ -2829,10 +2841,10 @@
             doc.setFontSize(13);
             ensureSpace(2);
             doc.text('5. Espaço para anotações do paciente e do terapeuta', pageWidth / 2, y, { align: 'center' });
-            y += 24;
+            y += 26;
 
             doc.setFont('times', 'normal');
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             ensureSpace(1);
             doc.text('Use o espaço abaixo para registrar observações, hipóteses clínicas e combinações de plano terapêutico.', marginX, y, { align: 'justify' });
             y += lineHeight * 2;
@@ -2891,49 +2903,50 @@
             linhas.push('');
             linhas.push('Segue o resumo do *Mapa de Esquemas – Inventário de Padrões Emocionais* para apoio à psicoterapia.');
             linhas.push('');
-            linhas.push('Identificação:');
 
-            let linhaId = `Nome: ${nome}`;
-            if (idade) linhaId += ` | Idade: ${idade}`;
-            if (dataAp) linhaId += ` | Data de aplicação: ${dataAp}`;
-            linhas.push(linhaId);
-            linhas.push('');
-            linhas.push('Esquemas principais (ativos e latentes):');
+            if (idade || dataAp) {
+                linhas.push('*Identificação:*');
+                let linhaId = `Nome: ${nome}`;
+                if (idade) linhaId += ` | Idade: ${idade}`;
+                if (dataAp) linhaId += ` | Data: ${dataAp}`;
+                linhas.push(linhaId);
+                linhas.push('');
+            }
 
-            const ordered = Object.values(results)
-                .filter(e => e.status === 'ativo' || e.status === 'latente')
-                .sort((a, b) => b.mean - a.mean);
+            const orderedResults = Object.values(results).sort((a, b) => b.mean - a.mean);
 
-            if (!ordered.length) {
-                linhas.push('Nenhum esquema apareceu claramente ativo ou latente relevante.');
-            } else {
-                ordered.forEach(entry => {
+            const ativos = orderedResults.filter(e => e.status === 'ativo');
+            const latentes = orderedResults.filter(e => e.status === 'latente');
+
+            if (ativos.length > 0) {
+                linhas.push('*Esquemas ativos (maior impacto atual):*');
+                ativos.forEach(entry => {
                     const mean = entry.count > 0 ? entry.mean.toFixed(2) : '-';
-                    const statusLabel = entry.status === 'ativo' ? 'Ativo' : 'Latente';
-                    linhas.push(
-                        `- ${entry.schema.nome} – média ${mean} | Status: ${statusLabel} | Estilo: ${entry.styleLabel}`
-                    );
+                    let statusLabel = 'Ativo';
+                    const estilo = entry.styleLabel || 'Não definido';
+                    linhas.push(`- ${entry.schema.nome} · média ${mean} · Status: ${statusLabel} · Estilo predominante: ${estilo}`);
                 });
+                linhas.push('');
             }
 
-            linhas.push('');
-            linhas.push('Observação: este é um rastreio de apoio à psicoterapia e não substitui avaliação psicológica completa.');
-
-            const message = linhas.join('\n');
-            const encoded = encodeURIComponent(message);
-
-            const whatsappNumber =
-                typeof window.MAPA_ESQUEMAS_WHATSAPP === 'string' &&
-                    window.MAPA_ESQUEMAS_WHATSAPP.trim()
-                    ? window.MAPA_ESQUEMAS_WHATSAPP.trim()
-                    : null;
-
-            if (!whatsappNumber) {
-                alert('Número de WhatsApp não configurado. Defina window.MAPA_ESQUEMAS_WHATSAPP com o número do psicólogo (formato internacional, sem espaços).');
-                return;
+            if (latentes.length > 0) {
+                linhas.push('*Esquemas latentes (vulnerabilidades em segundo plano):*');
+                latentes.forEach(entry => {
+                    const mean = entry.count > 0 ? entry.mean.toFixed(2) : '-';
+                    let statusLabel = 'Latente';
+                    const estilo = entry.styleLabel || 'Não definido';
+                    linhas.push(`- ${entry.schema.nome} · média ${mean} · Status: ${statusLabel} · Estilo predominante: ${estilo}`);
+                });
+                linhas.push('');
             }
 
-            const url = `https://wa.me/${whatsappNumber}?text=${encoded}`;
+            linhas.push('Obs.: este material é um *rastreio de autoconhecimento* e não substitui avaliação psicológica ou psiquiátrica formal.');
+            linhas.push('Sugestão: usar estes resultados como mapa de conversa na sessão.');
+
+            const message = encodeURIComponent(linhas.join('\n'));
+            const phone = '5535984640729'; // 55 (Brasil) + 35 (DDD) + 984640729
+            const url = `https://wa.me/${phone}?text=${message}`;
+
             window.open(url, '_blank');
         }
 
