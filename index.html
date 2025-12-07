@@ -532,6 +532,16 @@
             opacity: 0.9;
         }
 
+        /* Wrapper responsivo para tabela de resultados */
+        #resultsTableWrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        #resultsTableWrapper table {
+            min-width: 640px;
+        }
+
         /* MODAL */
         .modal {
             position: fixed;
@@ -597,6 +607,11 @@
 
         footer strong {
             font-weight: 600;
+        }
+
+        .footer-note {
+            font-size: 0.7rem;
+            font-style: italic;
         }
 
         @media (max-width: 600px) {
@@ -934,12 +949,13 @@
             </p>
             <div class="btn-row">
                 <button class="btn btn-whatsapp" id="sendWhatsApp">Enviar resumo ao meu psicólogo</button>
+                <button class="btn btn-secondary" id="sharePageWhatsApp">Compartilhar esta página com amigos</button>
             </div>
         </section>
 
         <footer>
             <div>© 2025 Richelmy Murta - Todos os direitos reservados</div>
-            <div>Este guia é um recurso psicoeducativo de apoio e não substitui psicoterapia, atendimento de emergência ou acompanhamento médico/psiquiátrico.</div>
+            <div class="footer-note">Este guia é um recurso psicoeducativo de apoio e não substitui psicoterapia, atendimento de emergência ou acompanhamento médico/psiquiátrico.</div>
         </footer>
     </div>
 
@@ -2161,6 +2177,7 @@
         const resultsIntro = document.getElementById('resultsIntro');
         const resultsTableWrapper = document.getElementById('resultsTableWrapper');
         const sendWhatsAppBtn = document.getElementById('sendWhatsApp');
+        const sharePageWhatsAppBtn = document.getElementById('sharePageWhatsApp');
         const perSchemaPsychoDiv = document.getElementById('perSchemaPsycho');
 
         let currentBlockIndex = 0;
@@ -2705,6 +2722,16 @@
                 const phone = '5535984640729';
                 const url = `https://wa.me/${phone}?text=${encoded}`;
 
+                window.open(url, '_blank');
+            });
+        }
+
+        if (sharePageWhatsAppBtn) {
+            sharePageWhatsAppBtn.addEventListener('click', () => {
+                const pageUrl = window.location.href || 'https://seuusuario.github.io/mapa-esquemas/';
+                const message = `Quero compartilhar com você esta ferramenta de autoconhecimento baseada em Terapia do Esquema: Mapa de Esquemas – Inventário de Padrões Emocionais. Acesse: ${pageUrl}`;
+                const encoded = encodeURIComponent(message);
+                const url = `https://wa.me/?text=${encoded}`;
                 window.open(url, '_blank');
             });
         }
