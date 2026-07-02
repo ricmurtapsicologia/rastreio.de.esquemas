@@ -10,14 +10,12 @@
     <meta name="keywords" content="Terapia do Esquema, Esquemas Iniciais Desadaptativos, rastreio, psicologia, avaliação psicológica, autoconhecimento">
     <meta name="author" content="Richelmy Murta∴, Psicólogo Clínico">
 
-    <!-- Open Graph -->
     <meta property="og:title" content="Mapa de Esquemas – Inventário de Padrões Emocionais">
     <meta property="og:description" content="Ferramenta de autoconhecimento baseada na Terapia do Esquema para apoiar sua psicoterapia.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://i.pinimg.com/736x/1f/68/67/1f6867294fd6c1b101f2fdab626e658b.jpg">
     <meta property="og:url" content="https://ricmurtapsicologia.github.io/rastreio.de.esquemas/">
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Mapa de Esquemas – Inventário de Padrões Emocionais">
     <meta name="twitter:description" content="Ferramenta de autoconhecimento baseada na Terapia do Esquema.">
@@ -25,8 +23,8 @@
 
     <link rel="icon" type="image/jpeg" href="https://i.pinimg.com/736x/1f/68/67/1f6867294fd6c1b101f2fdab626e658b.jpg">
 
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         :root {
@@ -108,7 +106,6 @@
             box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
         }
 
-        /* HERO / CAPA */
         .hero {
             display: grid;
             grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
@@ -237,6 +234,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
+            gap: 12px;
         }
 
         .card-title {
@@ -251,6 +249,7 @@
             border-radius: 999px;
             background-color: var(--accent-soft-light);
             color: var(--accent-light);
+            white-space: nowrap;
         }
 
         body.theme-dark .card-tag {
@@ -324,6 +323,29 @@
             opacity: 1;
         }
 
+        .btn-download {
+            border-color: rgba(0, 102, 204, 0.45);
+            color: var(--accent-light);
+            background: rgba(224, 240, 255, 0.4);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(0, 102, 204, 0.18);
+            background: rgba(224, 240, 255, 0.75);
+        }
+
+        body.theme-dark .btn-download {
+            color: var(--accent-dark);
+            border-color: rgba(77, 163, 255, 0.45);
+            background: rgba(31, 42, 58, 0.65);
+        }
+
+        body.theme-dark .btn-download:hover {
+            box-shadow: 0 10px 24px rgba(77, 163, 255, 0.18);
+            background: rgba(31, 42, 58, 0.95);
+        }
+
         .hidden {
             display: none;
         }
@@ -365,6 +387,7 @@
             background: transparent;
             color: inherit;
             font-size: 0.9rem;
+            box-sizing: border-box;
         }
 
         body.theme-dark input,
@@ -378,6 +401,23 @@
             margin-top: 6px;
             text-align: justify;
             line-height: 1.6;
+        }
+
+        .privacy-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            background: var(--accent-soft-light);
+            color: var(--accent-light);
+        }
+
+        body.theme-dark .privacy-chip {
+            background: var(--accent-soft-dark);
+            color: var(--accent-dark);
         }
 
         .cta-swipe {
@@ -546,7 +586,6 @@
             opacity: 0.9;
         }
 
-        /* Wrapper responsivo para tabela de resultados */
         #resultsTableWrapper {
             width: 100%;
             overflow-x: auto;
@@ -556,7 +595,6 @@
             min-width: 640px;
         }
 
-        /* MODAL */
         .modal {
             position: fixed;
             inset: 0;
@@ -604,6 +642,7 @@
             cursor: pointer;
             font-size: 1rem;
             opacity: 0.8;
+            color: inherit;
         }
 
         .modal-close:hover {
@@ -633,7 +672,6 @@
                 justify-content: flex-end;
             }
 
-            /* empilhar campos no mobile para evitar corte/sobreposição */
             .form-row {
                 flex-direction: column;
                 flex-wrap: nowrap;
@@ -644,9 +682,22 @@
                 flex: 1 1 auto;
                 min-width: 0;
             }
+
+            #actionsSection .btn-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #actionsSection .btn {
+                width: 100%;
+            }
+
+            .card-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
 
-        /* Cards 3D para "Entendendo seus esquemas ativos" */
         .schema-card {
             margin-bottom: 24px;
             padding: 12px 14px;
@@ -673,7 +724,6 @@
             color: #fecaca;
         }
 
-        /* Botões finais centralizados e botão WhatsApp */
         #actionsSection .btn-row {
             justify-content: center;
         }
@@ -724,7 +774,6 @@
             </div>
         </section>
 
-        <!-- INTRO -->
         <section id="introSection" class="card">
             <div class="card-header">
                 <div class="card-title">Bem-vindo(a)</div>
@@ -737,8 +786,8 @@
             </p>
             <p class="muted">
                 Esta ferramenta é um <strong>rastreio clínico</strong> de autoconhecimento. Ela não substitui avaliação psicológica, psiquiátrica
-                ou acompanhamento em psicoterapia. Em caso de sofrimento intenso ou pensamentos de morte/suicídio, procure ajuda
-                imediata em serviços de saúde ou ligue para serviços de apoio emocional da sua região.
+                ou acompanhamento em psicoterapia. Em caso de sofrimento emocional intenso, urgência ou risco à integridade,
+                procure ajuda imediata em serviços de saúde da sua região.
             </p>
             <div class="btn-row">
                 <button class="btn btn-primary" id="goConsent">Continuar</button>
@@ -748,7 +797,6 @@
             </div>
         </section>
 
-        <!-- MODAL SAIBA MAIS -->
         <div id="eidsModal" class="modal hidden" aria-hidden="true">
             <div class="modal-backdrop"></div>
             <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="eidsModalTitle">
@@ -774,7 +822,6 @@
             </div>
         </div>
 
-        <!-- CONSENTIMENTO -->
         <section id="consentSection" class="card hidden">
             <div class="card-header">
                 <div class="card-title">Consentimento informado</div>
@@ -798,15 +845,15 @@
             </div>
         </section>
 
-        <!-- DADOS BÁSICOS -->
         <section id="userdataSection" class="card hidden">
             <div class="card-header">
                 <div class="card-title">Seus dados básicos</div>
                 <span class="card-tag">Passo 3 de 4</span>
             </div>
             <p class="muted">
-                Estes campos servem apenas para identificação nos seus registros e, se desejar, na mensagem ao seu psicólogo(a) via WhatsApp.
-                As informações ficam no seu dispositivo e só serão compartilhadas se você decidir enviar o resumo.
+                Estes campos servem apenas para identificação nos seus registros, na mensagem ao seu psicólogo(a) via WhatsApp
+                e no relatório em PDF, se você decidir baixá-lo.
+                As informações ficam no seu dispositivo e só serão compartilhadas se você decidir enviar ou salvar.
             </p>
             <div class="form-row">
                 <div class="field">
@@ -824,7 +871,7 @@
             </div>
             <p class="helper">
                 Você poderá revisar todas as respostas antes de gerar seus resultados. O nome completo é útil para
-                organizar a mensagem ao psicólogo, mas não bloqueia o uso se for deixado em branco.
+                organizar a mensagem ao psicólogo e o relatório, mas não bloqueia o uso se for deixado em branco.
             </p>
             <div class="btn-row">
                 <button class="btn btn-primary" id="goQuestionnaire">Iniciar questionário</button>
@@ -832,7 +879,6 @@
             </div>
         </section>
 
-        <!-- QUESTIONÁRIO -->
         <section id="questionnaireSection" class="card hidden" tabindex="-1">
             <div class="card-header">
                 <div class="card-title">Questionário</div>
@@ -871,7 +917,6 @@
             </div>
         </section>
 
-        <!-- REVISÃO -->
         <section id="reviewSection" class="card hidden">
             <div class="card-header">
                 <div class="card-title">Revisar respostas</div>
@@ -885,7 +930,6 @@
             </div>
         </section>
 
-        <!-- RESULTADOS -->
         <section id="resultsSection" class="card hidden">
             <div class="card-header">
                 <div class="card-title">Seus resultados</div>
@@ -954,19 +998,20 @@
             </div>
         </section>
 
-        <!-- AÇÕES FINAIS -->
         <section id="actionsSection" class="card hidden">
             <div class="card-header">
                 <div class="card-title">Exportar e compartilhar</div>
                 <span class="card-tag">Próximos passos</span>
             </div>
             <p class="muted">
-                Você pode enviar um resumo dos seus resultados diretamente para seu psicólogo via WhatsApp ou salvar as
-                informações para a sua própria reflexão em terapia.
+                Você pode enviar um resumo dos seus resultados diretamente para seu psicólogo via WhatsApp, compartilhar a página
+                ou baixar um relatório psicoeducativo em PDF para reflexão e discussão em terapia.
             </p>
+            <div class="privacy-chip">🔒 O PDF é gerado localmente no navegador. Nenhum dado é enviado automaticamente.</div>
             <div class="btn-row">
                 <button class="btn btn-whatsapp" id="sendWhatsApp">Enviar resumo ao meu psicólogo</button>
                 <button class="btn btn-secondary" id="sharePageWhatsApp">Compartilhar esta página com amigos</button>
+                <button class="btn btn-secondary btn-download" id="downloadPdfReport">Baixar relatório em PDF</button>
             </div>
         </section>
 
@@ -977,9 +1022,6 @@
     </div>
 
     <script>
-        // =========================
-        // TEMA CLARO/ESCURO
-        // =========================
         const themeToggle = document.getElementById('themeToggle');
         const storedTheme = localStorage.getItem('mapaEsquemasTheme');
 
@@ -1001,9 +1043,6 @@
             });
         }
 
-        // =========================
-        // MODAL "SAIBA MAIS"
-        // =========================
         const learnEidsBtn = document.getElementById('learnEidsBtn');
         const eidsModal = document.getElementById('eidsModal');
         const closeEidsModal = document.getElementById('closeEidsModal');
@@ -1027,9 +1066,6 @@
         if (closeEidsModal2) closeEidsModal2.addEventListener('click', closeEids);
         if (eidsBackdrop) eidsBackdrop.addEventListener('click', closeEids);
 
-        // =========================
-        // NAVEGAÇÃO DE SEÇÕES
-        // =========================
         const introSection = document.getElementById('introSection');
         const consentSection = document.getElementById('consentSection');
         const userdataSection = document.getElementById('userdataSection');
@@ -1092,16 +1128,16 @@
             });
         }
 
-        // =========================
-        // DADOS BÁSICOS
-        // =========================
         const nomeInput = document.getElementById('nomeCompleto');
         const idadeInput = document.getElementById('idade');
         const dataInput = document.getElementById('dataAplicacao');
 
-        // =========================
-        // ESQUEMAS (18 EIDs)
-        // =========================
+        if (dataInput && !dataInput.value) {
+            const today = new Date();
+            const tzDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+            dataInput.value = tzDate.toISOString().slice(0, 10);
+        }
+
         const schemas = [{
                 id: 'PE',
                 nome: 'Privação Emocional',
@@ -1132,7 +1168,6 @@
                 dominio: 'Desconexão e Rejeição',
                 descricao_curta: 'Sentimento de ser defeituoso(a), inferior ou indigno(a) de amor.'
             },
-
             {
                 id: 'FD',
                 nome: 'Fracasso',
@@ -1157,7 +1192,6 @@
                 dominio: 'Autonomia e Desempenho Prejudicados',
                 descricao_curta: 'Dificuldade em sentir-se separado(a) emocionalmente de pessoas importantes.'
             },
-
             {
                 id: 'SB',
                 nome: 'Subjugação',
@@ -1176,7 +1210,6 @@
                 dominio: 'Outrificação',
                 descricao_curta: 'Necessidade intensa de agradar e ser aprovado(a) para se sentir valioso(a).'
             },
-
             {
                 id: 'EC',
                 nome: 'Direitos Elevados/Grandiosidade',
@@ -1189,7 +1222,6 @@
                 dominio: 'Limites Prejudicados',
                 descricao_curta: 'Dificuldade em tolerar frustrações, cumprir rotinas e controlar impulsos.'
             },
-
             {
                 id: 'NP',
                 nome: 'Negatividade/Pessimismo',
@@ -1216,9 +1248,6 @@
             }
         ];
 
-        // =========================
-        // PSICOEDUCAÇÃO POR ESQUEMA
-        // =========================
         const schemaPsycho = {
             PE: {
                 titulo: 'Privação Emocional',
@@ -1366,11 +1395,7 @@
             }
         };
 
-        // =========================
-        // ITENS – 108 QUESTÕES
-        // =========================
         const questions = [
-            // PRIVACAO EMOCIONAL (PE) – 6
             {
                 id: 'Q01',
                 number: 1,
@@ -1413,8 +1438,6 @@
                 text: 'Costumo me orgulhar de ser “forte” e autossuficiente, mesmo quando por dentro sinto carência emocional.',
                 styleHint: 'H'
             },
-
-            // ABANDONO (AB) – 6
             {
                 id: 'Q07',
                 number: 7,
@@ -1457,8 +1480,6 @@
                 text: 'Costumo testar o quanto alguém gosta de mim, criando situações para ver se a pessoa continua comigo.',
                 styleHint: 'H'
             },
-
-            // DESCONFIANÇA/ABUSO (DA) – 6
             {
                 id: 'Q13',
                 number: 13,
@@ -1501,8 +1522,6 @@
                 text: 'Costumo testar a lealdade das pessoas, fazendo pequenas provocações ou criando conflitos.',
                 styleHint: 'H'
             },
-
-            // ISOLAMENTO SOCIAL (SI) – 6
             {
                 id: 'Q19',
                 number: 19,
@@ -1545,8 +1564,6 @@
                 text: 'Em outros momentos tento parecer indiferente aos grupos, como se não me importasse em fazer parte de nada.',
                 styleHint: 'H'
             },
-
-            // DEFECTIVIDADE/VERGONHA (DI) – 6
             {
                 id: 'Q25',
                 number: 25,
@@ -1589,8 +1606,6 @@
                 text: 'Em alguns momentos ajo com arrogância ou superioridade para esconder o quanto me sinto inadequado(a).',
                 styleHint: 'H'
             },
-
-            // FRACASSO (FD) – 6
             {
                 id: 'Q31',
                 number: 31,
@@ -1633,8 +1648,6 @@
                 text: 'Costumo ser muito competitivo(a) para compensar sentimentos de inferioridade em relação aos outros.',
                 styleHint: 'H'
             },
-
-            // DEPENDÊNCIA/INCOMPETÊNCIA (DIIN) – 6
             {
                 id: 'Q37',
                 number: 37,
@@ -1677,8 +1690,6 @@
                 text: 'Às vezes assumo o controle de tudo, sem pedir ajuda, para evitar qualquer sensação de dependência.',
                 styleHint: 'H'
             },
-
-            // VULNERABILIDADE AO DANO/DOENÇA (VV) – 6
             {
                 id: 'Q43',
                 number: 43,
@@ -1721,8 +1732,6 @@
                 text: 'Costumo orientar ou criticar os outros por achá-los “relaxados” com riscos que levo muito a sério.',
                 styleHint: 'H'
             },
-
-            // EMARANHAMENTO/SELF SUBDESENVOLVIDO (EM) – 6
             {
                 id: 'Q49',
                 number: 49,
@@ -1765,8 +1774,6 @@
                 text: 'Às vezes ajo de forma excessivamente autônoma, recusando ajuda para não parecer dependente.',
                 styleHint: 'H'
             },
-
-            // SUBJUGAÇÃO (SB) – 6
             {
                 id: 'Q55',
                 number: 55,
@@ -1809,8 +1816,6 @@
                 text: 'Às vezes assumo um tom autoritário para compensar períodos em que me senti muito submisso(a).',
                 styleHint: 'H'
             },
-
-            // AUTOSSACRIFÍCIO (SA) – 6
             {
                 id: 'Q61',
                 number: 61,
@@ -1853,8 +1858,6 @@
                 text: 'Em alguns momentos faço questão de mostrar o quanto me sacrifico para que os outros reconheçam meu valor.',
                 styleHint: 'H'
             },
-
-            // APROVAÇÃO/BUSCA POR RECONHECIMENTO (AP) – 6
             {
                 id: 'Q67',
                 number: 67,
@@ -1897,8 +1900,6 @@
                 text: 'Costumo disputar espaço ou reconhecimento quando sinto que não estou recebendo atenção suficiente.',
                 styleHint: 'H'
             },
-
-            // DIREITOS ELEVADOS/GRANDIOSIDADE (EC) – 6
             {
                 id: 'Q73',
                 number: 73,
@@ -1941,8 +1942,6 @@
                 text: 'Costumo tratar os outros como se eles devessem se adaptar ao meu ritmo ou preferências.',
                 styleHint: 'H'
             },
-
-            // AUTOCONTROLE/AUTODISCIPLINA INSUFICIENTES (AI) – 6
             {
                 id: 'Q79',
                 number: 79,
@@ -1985,8 +1984,6 @@
                 text: 'Às vezes imponho regras muito rígidas para mim ou para outras pessoas depois de perceber que exagerei em impulsos.',
                 styleHint: 'H'
             },
-
-            // NEGATIVIDADE/PESSIMISMO (NP) – 6
             {
                 id: 'Q85',
                 number: 85,
@@ -2029,8 +2026,6 @@
                 text: 'Costumo ser visto(a) como alguém muito preocupado(a) ou “realista demais” sobre o que pode dar errado.',
                 styleHint: 'H'
             },
-
-            // INIBIÇÃO EMOCIONAL (IE) – 6
             {
                 id: 'Q91',
                 number: 91,
@@ -2073,8 +2068,6 @@
                 text: 'Às vezes pareço frio(a) ou distante por fora, mesmo sentindo muitas coisas por dentro.',
                 styleHint: 'H'
             },
-
-            // PADRÕES INFLEXÍVEIS/CRÍTICA EXAGERADA (PC) – 6
             {
                 id: 'Q97',
                 number: 97,
@@ -2117,8 +2110,6 @@
                 text: 'Às vezes imponho padrões muito rígidos às pessoas ao meu redor, esperando que façam tudo “do jeito certo”.',
                 styleHint: 'H'
             },
-
-            // PUNITIVIDADE (PCO) – 6
             {
                 id: 'Q103',
                 number: 103,
@@ -2163,10 +2154,9 @@
             }
         ];
 
-        // Agrupamento em blocos (10 itens por bloco, último com 8)
         questions.forEach(q => {
             if (!q.group) {
-                q.group = Math.ceil(q.number / 10); // 1 a 11
+                q.group = Math.ceil(q.number / 10);
             }
         });
 
@@ -2195,6 +2185,7 @@
         const resultsTableWrapper = document.getElementById('resultsTableWrapper');
         const sendWhatsAppBtn = document.getElementById('sendWhatsApp');
         const sharePageWhatsAppBtn = document.getElementById('sharePageWhatsApp');
+        const downloadPdfReportBtn = document.getElementById('downloadPdfReport');
         const perSchemaPsychoDiv = document.getElementById('perSchemaPsycho');
 
         let currentBlockIndex = 0;
@@ -2406,9 +2397,6 @@
             });
         }
 
-        // =========================
-        // CÁLCULO DE ESCORES E ESTILOS
-        // =========================
         function calculateSchemaScores() {
             const schemaScores = {};
             schemas.forEach(s => {
@@ -2491,9 +2479,6 @@
             return schemaScores;
         }
 
-        // =========================
-        // GRÁFICO – CORES POR STATUS
-        // =========================
         function getChartColors() {
             const isDark = document.body.classList.contains('theme-dark');
             return {
@@ -2576,13 +2561,13 @@
                 dataMeans.push(entry.mean);
 
                 if (entry.status === 'ativo') {
-                    bgColors.push('rgba(220,38,38,0.85)'); // vermelho
+                    bgColors.push('rgba(220,38,38,0.85)');
                     borderColors.push('rgba(185,28,28,1)');
                 } else if (entry.status === 'latente') {
-                    bgColors.push('rgba(234,179,8,0.85)'); // amarelo
+                    bgColors.push('rgba(234,179,8,0.85)');
                     borderColors.push('rgba(202,138,4,1)');
                 } else {
-                    bgColors.push('rgba(22,163,74,0.85)'); // verde
+                    bgColors.push('rgba(22,163,74,0.85)');
                     borderColors.push('rgba(21,128,61,1)');
                 }
             });
@@ -2644,7 +2629,6 @@
             applyChartTheme(window.schemasChartInstance);
             window._mapaEsquemasResults = schemaScores;
 
-            // Psicoeducação por esquema ativo (HTML)
             if (perSchemaPsychoDiv) {
                 const ativos = Object.values(schemaScores).filter(e => e.status === 'ativo');
                 if (ativos.length === 0) {
@@ -2671,9 +2655,6 @@
             }
         }
 
-        // =========================
-        // WHATSAPP – RESUMO
-        // =========================
         function buildWhatsAppMessage() {
             const results = window._mapaEsquemasResults || null;
             if (!results || !Object.keys(results).length) {
@@ -2688,7 +2669,7 @@
             headerLines.push(`*Mapa de Esquemas – Inventário de Padrões Emocionais*`);
             headerLines.push(`Nome: ${nome}`);
             if (idade) headerLines.push(`Idade: ${idade} anos`);
-            if (dataAp) headerLines.push(`Data de aplicação: ${dataAp}`);
+            if (dataAp) headerLines.push(`Data de aplicação: ${formatDateBR(dataAp)}`);
             headerLines.push('');
 
             const ativos = [];
@@ -2734,8 +2715,6 @@
                     return;
                 }
                 const encoded = encodeURIComponent(msg);
-
-                // DDI 55 (Brasil) + DDD 35 + número
                 const phone = '5535984640729';
                 const url = `https://wa.me/${phone}?text=${encoded}`;
 
@@ -2745,12 +2724,929 @@
 
         if (sharePageWhatsAppBtn) {
             sharePageWhatsAppBtn.addEventListener('click', () => {
-                const pageUrl ='https://https://ricmurtapsicologia.github.io/rastreio.de.esquemas/';
+                const pageUrl = 'https://ricmurtapsicologia.github.io/rastreio.de.esquemas/';
                 const message = `Quero compartilhar com você esta ferramenta de autoconhecimento baseada em Terapia do Esquema: Mapa de Esquemas – Inventário de Padrões Emocionais. Acesse: ${pageUrl}`;
                 const encoded = encodeURIComponent(message);
                 const url = `https://wa.me/?text=${encoded}`;
                 window.open(url, '_blank');
             });
+        }
+
+        const PDF_THEME = {
+            blue: '#0F2A3D',
+            text: '#222222',
+            muted: '#666666',
+            lightBlue: '#EEF6FA',
+            tableHead: '#F3F5F7',
+            line: '#D7DEE5',
+            active: '#B91C1C',
+            latent: '#A16207',
+            absent: '#166534',
+            white: '#FFFFFF'
+        };
+
+        const PDF_LAYOUT = {
+            pageWidth: 210,
+            pageHeight: 297,
+            marginTop: 20,
+            marginBottom: 18,
+            marginLeft: 22,
+            marginRight: 22,
+            contentWidth: 166,
+            contentBottom: 268,
+            footerLineY: 277,
+            footerY: 282,
+            firstHeaderBottom: 45,
+            compactHeaderBottom: 32
+        };
+
+        function hexToRgb(hex) {
+            const clean = String(hex || '').replace('#', '').trim();
+            const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+            const value = parseInt(full, 16);
+            return {
+                r: (value >> 16) & 255,
+                g: (value >> 8) & 255,
+                b: value & 255
+            };
+        }
+
+        function setTextColorHex(doc, hex) {
+            const c = hexToRgb(hex);
+            doc.setTextColor(c.r, c.g, c.b);
+        }
+
+        function setDrawColorHex(doc, hex) {
+            const c = hexToRgb(hex);
+            doc.setDrawColor(c.r, c.g, c.b);
+        }
+
+        function setFillColorHex(doc, hex) {
+            const c = hexToRgb(hex);
+            doc.setFillColor(c.r, c.g, c.b);
+        }
+
+        function formatDateBR(dateString) {
+            if (!dateString) {
+                const d = new Date();
+                return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            }
+
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                const [year, month, day] = dateString.split('-');
+                return `${day}/${month}/${year}`;
+            }
+
+            const d = new Date(dateString);
+            if (Number.isNaN(d.getTime())) return dateString;
+
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        function formatDateLongBR(dateString) {
+            const months = [
+                'janeiro',
+                'fevereiro',
+                'março',
+                'abril',
+                'maio',
+                'junho',
+                'julho',
+                'agosto',
+                'setembro',
+                'outubro',
+                'novembro',
+                'dezembro'
+            ];
+
+            let d;
+            if (dateString && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                const [year, month, day] = dateString.split('-').map(Number);
+                d = new Date(year, month - 1, day);
+            } else if (dateString) {
+                d = new Date(dateString);
+            } else {
+                d = new Date();
+            }
+
+            if (Number.isNaN(d.getTime())) d = new Date();
+
+            return `${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
+        }
+
+        function getIsoDateSafe(dateString) {
+            if (dateString && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function sanitizeFileName(value) {
+            const base = String(value || 'Paciente')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9\s_-]/g, '')
+                .trim()
+                .replace(/\s+/g, '_');
+
+            return base || 'Paciente';
+        }
+
+        function getOrderedResults(results) {
+            return Object.values(results || {}).sort((a, b) => {
+                const indexA = schemas.findIndex(s => s.id === a.schema.id);
+                const indexB = schemas.findIndex(s => s.id === b.schema.id);
+                return indexA - indexB;
+            });
+        }
+
+        function getActiveSchemas(results) {
+            return getOrderedResults(results)
+                .filter(entry => entry.status === 'ativo')
+                .sort((a, b) => b.mean - a.mean);
+        }
+
+        function getLatentSchemas(results) {
+            return getOrderedResults(results)
+                .filter(entry => entry.status === 'latente')
+                .sort((a, b) => b.mean - a.mean);
+        }
+
+        function getStatusLabel(status) {
+            if (status === 'ativo') return 'Ativo';
+            if (status === 'latente') return 'Latente';
+            return 'Ausente';
+        }
+
+        function getStyleKeyFromLabel(label) {
+            const normalized = String(label || '').toLowerCase();
+            if (normalized.includes('resignado')) return 'resignado';
+            if (normalized.includes('evitativo')) return 'evitativo';
+            if (normalized.includes('hipercompensador')) return 'hipercompensador';
+            return 'geral';
+        }
+
+        function getStatusColor(status) {
+            if (status === 'ativo') return PDF_THEME.active;
+            if (status === 'latente') return PDF_THEME.latent;
+            return PDF_THEME.absent;
+        }
+
+        function countActiveStyles(activeEntries) {
+            const counts = {
+                'Resignado(a)': 0,
+                'Evitativo(a)': 0,
+                'Hipercompensador(a)': 0,
+                'Não definido': 0
+            };
+
+            activeEntries.forEach(entry => {
+                if (counts[entry.styleLabel] == null) {
+                    counts[entry.styleLabel] = 0;
+                }
+                counts[entry.styleLabel] += 1;
+            });
+
+            const ordered = Object.entries(counts)
+                .filter(([, value]) => value > 0)
+                .sort((a, b) => b[1] - a[1]);
+
+            if (ordered.length === 0) return 'não houve estilo predominante entre esquemas ativos, pois nenhum esquema apareceu claramente ativo';
+
+            return ordered.map(([label, value]) => `${label}: ${value}`).join('; ');
+        }
+
+        function getFocusedPsychoeducation(entry) {
+            const info = schemaPsycho[entry.schema.id];
+            if (!info) {
+                return 'Os resultados sugerem que este padrão pode ser explorado em psicoterapia com atenção aos gatilhos, emoções, pensamentos e respostas comportamentais associadas.';
+            }
+
+            const styleKey = getStyleKeyFromLabel(entry.styleLabel);
+            const schemaName = info.titulo;
+
+            if (styleKey === 'resignado') {
+                return `No esquema ${schemaName}, o estilo resignado pode indicar tendência a aceitar o padrão como se ele fosse uma verdade natural sobre si, sobre os outros ou sobre as relações. Neste caso, observa-se: ${info.resignado} O custo emocional possível é a manutenção de vínculos, escolhas ou rotinas que confirmam a história dolorosa. Em psicoterapia, pode ser útil investigar em quais situações a pessoa se adapta automaticamente, quais necessidades são silenciadas e quais respostas mais protetivas poderiam ser construídas com segurança.`;
+            }
+
+            if (styleKey === 'evitativo') {
+                return `No esquema ${schemaName}, o estilo evitativo pode indicar tendência a reduzir o contato com situações, emoções, conversas ou vínculos que ativam desconforto. Neste caso, observa-se: ${info.evitativo} O alívio costuma aparecer no curto prazo, mas o padrão pode permanecer pouco elaborado no longo prazo. Em psicoterapia, pode ser útil mapear o que é evitado, qual emoção aparece antes da fuga e quais aproximações graduais seriam possíveis sem exposição excessiva.`;
+            }
+
+            if (styleKey === 'hipercompensador') {
+                return `No esquema ${schemaName}, o estilo hipercompensador pode indicar tentativa de enfrentar a dor emocional indo para o extremo oposto do esquema. Neste caso, observa-se: ${info.hipercompensador} Essa resposta pode trazer sensação temporária de força ou controle, mas também pode gerar rigidez, conflitos e exaustão. Em psicoterapia, pode ser útil diferenciar proteção saudável de reação excessiva, observando quando a postura defensiva se torna mais intensa do que a situação atual exige.`;
+            }
+
+            return `No esquema ${schemaName}, os dados sugerem um padrão emocional que merece investigação clínica. ${info.definicao} Em psicoterapia, pode ser útil compreender os gatilhos atuais, a história de formação do esquema, os modos de enfrentamento e as respostas alternativas possíveis.`;
+        }
+
+        function buildPdfData() {
+            let results = window._mapaEsquemasResults || null;
+
+            if (!results || !Object.keys(results).length) {
+                const answered = Object.keys(responses).length;
+                if (answered > 0) {
+                    results = calculateSchemaScores();
+                    window._mapaEsquemasResults = results;
+                }
+            }
+
+            if (!results || !Object.keys(results).length) {
+                return null;
+            }
+
+            const name = nomeInput?.value?.trim() || 'Não informado';
+            const age = idadeInput?.value?.trim() || 'Não informada';
+            const applicationDate = dataInput?.value?.trim() || getIsoDateSafe();
+
+            return {
+                name,
+                age,
+                applicationDate,
+                dateBR: formatDateBR(applicationDate),
+                dateLong: formatDateLongBR(applicationDate),
+                cityDate: `Lagoa Santa – MG, ${formatDateLongBR(applicationDate)}`,
+                results,
+                ordered: getOrderedResults(results),
+                active: getActiveSchemas(results),
+                latent: getLatentSchemas(results)
+            };
+        }
+
+        function addPdfHeader(doc, pageNumber) {
+            const left = PDF_LAYOUT.marginLeft;
+            const right = PDF_LAYOUT.pageWidth - PDF_LAYOUT.marginRight;
+
+            setTextColorHex(doc, PDF_THEME.blue);
+            doc.setFont('helvetica', 'bold');
+
+            if (pageNumber === 1) {
+                doc.setFontSize(14);
+                doc.text('Richelmy Murta∴ Pinto', left, 18);
+
+                setTextColorHex(doc, PDF_THEME.text);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9.5);
+                doc.text('Psicólogo Clínico | CRP 04/54.383', left, 24);
+
+                doc.setFontSize(9);
+                doc.text('Especialista em Terapia Cognitivo-Comportamental e Terapia do Esquema', left, 29);
+
+                doc.setFontSize(8.5);
+                setTextColorHex(doc, PDF_THEME.muted);
+                doc.text('Atendimento psicológico online | Lagoa Santa – MG', left, 34);
+
+                setDrawColorHex(doc, PDF_THEME.line);
+                doc.setLineWidth(0.25);
+                doc.line(left, 39, right, 39);
+
+                return PDF_LAYOUT.firstHeaderBottom;
+            }
+
+            doc.setFontSize(9);
+            doc.text('Richelmy Murta∴ Pinto', left, 17);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Mapa de Esquemas – Relatório psicoeducativo de rastreio clínico', left, 23);
+
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.2);
+            doc.line(left, 27, right, 27);
+
+            return PDF_LAYOUT.compactHeaderBottom;
+        }
+
+        function addPdfFooter(doc, pageNumber, totalPages) {
+            const left = PDF_LAYOUT.marginLeft;
+            const right = PDF_LAYOUT.pageWidth - PDF_LAYOUT.marginRight;
+            const center = PDF_LAYOUT.pageWidth / 2;
+
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.2);
+            doc.line(left, PDF_LAYOUT.footerLineY, right, PDF_LAYOUT.footerLineY);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Richelmy Murta∴ Pinto – Psicólogo Clínico – CRP 04/54.383', center, PDF_LAYOUT.footerY, {
+                align: 'center'
+            });
+            doc.text('Atendimento psicológico online | Lagoa Santa – MG', center, PDF_LAYOUT.footerY + 4, {
+                align: 'center'
+            });
+            doc.text('WhatsApp: (35) 98464-0729 | ricmurtapsicologia@gmail.com | @ricmurtapsicologia', center, PDF_LAYOUT.footerY + 8, {
+                align: 'center'
+            });
+            doc.text(`Página ${pageNumber} de ${totalPages}`, right, PDF_LAYOUT.footerY + 8, {
+                align: 'right'
+            });
+        }
+
+        function checkPageBreak(doc, y, neededSpace) {
+            if (y + neededSpace <= PDF_LAYOUT.contentBottom) {
+                return y;
+            }
+
+            doc.addPage();
+            const pageNumber = doc.internal.getNumberOfPages();
+            const newY = addPdfHeader(doc, pageNumber) + 5;
+            return newY;
+        }
+
+        function addWrappedText(doc, text, x, y, maxWidth, lineHeight, options = {}) {
+            const fontSize = options.fontSize || 10;
+            const fontStyle = options.fontStyle || 'normal';
+            const color = options.color || PDF_THEME.text;
+            const paragraphGap = options.paragraphGap ?? 2.5;
+            const firstLineIndent = options.firstLineIndent || 0;
+
+            doc.setFont('helvetica', fontStyle);
+            doc.setFontSize(fontSize);
+            setTextColorHex(doc, color);
+
+            const paragraphs = String(text || '').split(/\n+/);
+
+            paragraphs.forEach(paragraph => {
+                const clean = paragraph.trim();
+                if (!clean) {
+                    y += lineHeight;
+                    return;
+                }
+
+                const lines = doc.splitTextToSize(clean, maxWidth);
+
+                lines.forEach((line, index) => {
+                    y = checkPageBreak(doc, y, lineHeight + 1);
+                    doc.setFont('helvetica', fontStyle);
+                    doc.setFontSize(fontSize);
+                    setTextColorHex(doc, color);
+
+                    const lineX = index === 0 && firstLineIndent ? x + firstLineIndent : x;
+                    const lineMax = index === 0 && firstLineIndent ? maxWidth - firstLineIndent : maxWidth;
+                    doc.text(line, lineX, y, {
+                        maxWidth: lineMax
+                    });
+                    y += lineHeight;
+                });
+
+                y += paragraphGap;
+            });
+
+            return y;
+        }
+
+        function addSectionTitle(doc, title, y) {
+            y = checkPageBreak(doc, y, 12);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            setTextColorHex(doc, PDF_THEME.blue);
+            doc.text(title, PDF_LAYOUT.marginLeft, y);
+
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.2);
+            doc.line(PDF_LAYOUT.marginLeft, y + 2, PDF_LAYOUT.pageWidth - PDF_LAYOUT.marginRight, y + 2);
+
+            return y + 7;
+        }
+
+        function addSubsectionTitle(doc, title, y) {
+            y = checkPageBreak(doc, y, 9);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10.5);
+            setTextColorHex(doc, PDF_THEME.text);
+            doc.text(title, PDF_LAYOUT.marginLeft, y);
+
+            return y + 5;
+        }
+
+        function addInfoBox(doc, title, text, y, options = {}) {
+            const x = PDF_LAYOUT.marginLeft;
+            const width = PDF_LAYOUT.contentWidth;
+            const padding = 4;
+            const titleHeight = title ? 5 : 0;
+            const lineHeight = options.lineHeight || 4.5;
+            const fontSize = options.fontSize || 9;
+            const fill = options.fill || PDF_THEME.lightBlue;
+            const border = options.border || PDF_THEME.line;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            const lines = doc.splitTextToSize(String(text || ''), width - padding * 2);
+            const height = padding + titleHeight + lines.length * lineHeight + padding;
+
+            y = checkPageBreak(doc, y, height + 4);
+
+            setFillColorHex(doc, fill);
+            setDrawColorHex(doc, border);
+            doc.setLineWidth(0.2);
+            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+
+            let textY = y + padding + 3;
+            if (title) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9.5);
+                setTextColorHex(doc, PDF_THEME.blue);
+                doc.text(title, x + padding, textY);
+                textY += 5;
+            }
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            setTextColorHex(doc, PDF_THEME.text);
+            lines.forEach(line => {
+                doc.text(line, x + padding, textY);
+                textY += lineHeight;
+            });
+
+            return y + height + 5;
+        }
+
+        function addIdentificationBox(doc, data, y) {
+            const x = PDF_LAYOUT.marginLeft;
+            const width = PDF_LAYOUT.contentWidth;
+            const padding = 4;
+            const height = 43;
+            const colGap = 6;
+            const colWidth = (width - padding * 2 - colGap) / 2;
+            const leftX = x + padding;
+            const rightX = leftX + colWidth + colGap;
+
+            y = checkPageBreak(doc, y, height + 4);
+
+            setFillColorHex(doc, PDF_THEME.white);
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.25);
+            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+
+            function field(label, value, fx, fy, maxWidth) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8.8);
+                setTextColorHex(doc, PDF_THEME.blue);
+                doc.text(label, fx, fy);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8.8);
+                setTextColorHex(doc, PDF_THEME.text);
+                const lines = doc.splitTextToSize(String(value || ''), maxWidth);
+                doc.text(lines, fx + 24, fy, {
+                    maxWidth: maxWidth - 24
+                });
+            }
+
+            field('Interessado(a):', data.name, leftX, y + 9, colWidth);
+            field('Idade:', data.age, rightX, y + 9, colWidth);
+            field('Data:', data.dateBR, leftX, y + 17, colWidth);
+            field('Documento:', 'Relatório psicoeducativo de rastreio de esquemas', rightX, y + 17, colWidth);
+            field('Finalidade:', 'Apoio à reflexão clínica e discussão em psicoterapia', leftX, y + 27, width - padding * 2);
+            field('Cidade/Data:', data.cityDate, leftX, y + 36, width - padding * 2);
+
+            return y + height + 7;
+        }
+
+        function addClinicalBox(doc, entry, y) {
+            const info = schemaPsycho[entry.schema.id];
+            const x = PDF_LAYOUT.marginLeft;
+            const width = PDF_LAYOUT.contentWidth;
+            const padding = 4;
+            const focused = getFocusedPsychoeducation(entry);
+            const title = `${entry.schema.nome} | Média ${entry.mean.toFixed(2)} | ${entry.styleLabel}`;
+            const intro = `Domínio: ${entry.schema.dominio}. ${entry.interpretacao}`;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.3);
+            const linesIntro = doc.splitTextToSize(intro, width - padding * 2);
+            const linesFocus = doc.splitTextToSize(focused, width - padding * 2);
+            const definition = info ? `${info.definicao} ${info.origem}` : '';
+            const linesDef = definition ? doc.splitTextToSize(definition, width - padding * 2) : [];
+
+            const height = 12 + (linesIntro.length + linesDef.length + linesFocus.length) * 4.4 + 8;
+            y = checkPageBreak(doc, y, Math.min(height + 5, 110));
+
+            setFillColorHex(doc, '#FFFFFF');
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.25);
+            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+
+            setFillColorHex(doc, PDF_THEME.active);
+            doc.rect(x, y, 2.2, height, 'F');
+
+            let textY = y + 7;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10.2);
+            setTextColorHex(doc, PDF_THEME.active);
+            doc.text(title, x + padding, textY);
+
+            textY += 6;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.3);
+            setTextColorHex(doc, PDF_THEME.text);
+
+            linesIntro.forEach(line => {
+                doc.text(line, x + padding, textY);
+                textY += 4.4;
+            });
+
+            if (linesDef.length) {
+                textY += 1;
+                linesDef.forEach(line => {
+                    doc.text(line, x + padding, textY);
+                    textY += 4.4;
+                });
+            }
+
+            textY += 1;
+            linesFocus.forEach(line => {
+                doc.text(line, x + padding, textY);
+                textY += 4.4;
+            });
+
+            return y + height + 5;
+        }
+
+        function addResultsTable(doc, results, y) {
+            const entries = getOrderedResults(results);
+            const x = PDF_LAYOUT.marginLeft;
+            const widths = [40, 43, 18, 22, 43];
+            const headers = ['Esquema', 'Domínio', 'Média', 'Status', 'Estilo'];
+            const tableWidth = widths.reduce((acc, cur) => acc + cur, 0);
+
+            function drawHeader(currentY) {
+                currentY = checkPageBreak(doc, currentY, 9);
+                setFillColorHex(doc, PDF_THEME.tableHead);
+                setDrawColorHex(doc, PDF_THEME.line);
+                doc.setLineWidth(0.2);
+                doc.rect(x, currentY, tableWidth, 7, 'FD');
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8.2);
+                setTextColorHex(doc, PDF_THEME.blue);
+
+                let cx = x;
+                headers.forEach((header, index) => {
+                    doc.text(header, cx + 1.5, currentY + 4.8);
+                    cx += widths[index];
+                });
+
+                return currentY + 7;
+            }
+
+            y = drawHeader(y);
+
+            entries.forEach((entry, rowIndex) => {
+                const row = [
+                    entry.schema.nome,
+                    entry.schema.dominio,
+                    entry.mean.toFixed(2),
+                    getStatusLabel(entry.status),
+                    entry.styleLabel
+                ];
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.3);
+
+                const cellLines = row.map((value, index) => doc.splitTextToSize(String(value), widths[index] - 3));
+                const maxLines = Math.max(...cellLines.map(lines => lines.length));
+                const rowHeight = Math.max(7, maxLines * 3.4 + 3);
+
+                if (y + rowHeight > PDF_LAYOUT.contentBottom) {
+                    doc.addPage();
+                    addPdfHeader(doc, doc.internal.getNumberOfPages());
+                    y = PDF_LAYOUT.compactHeaderBottom + 5;
+                    y = drawHeader(y);
+                }
+
+                if (rowIndex % 2 === 1) {
+                    setFillColorHex(doc, '#FAFBFC');
+                    doc.rect(x, y, tableWidth, rowHeight, 'F');
+                }
+
+                setDrawColorHex(doc, PDF_THEME.line);
+                doc.setLineWidth(0.15);
+
+                let cx = x;
+                widths.forEach(width => {
+                    doc.rect(cx, y, width, rowHeight, 'S');
+                    cx += width;
+                });
+
+                cx = x;
+                row.forEach((value, index) => {
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(7.3);
+
+                    if (index === 3) {
+                        setTextColorHex(doc, getStatusColor(entry.status));
+                        doc.setFont('helvetica', 'bold');
+                    } else {
+                        setTextColorHex(doc, PDF_THEME.text);
+                    }
+
+                    const lines = cellLines[index];
+                    doc.text(lines, cx + 1.5, y + 4, {
+                        maxWidth: widths[index] - 3
+                    });
+                    cx += widths[index];
+                });
+
+                y += rowHeight;
+            });
+
+            return y + 6;
+        }
+
+        function addScoresBars(doc, results, y) {
+            const entries = getOrderedResults(results);
+            const x = PDF_LAYOUT.marginLeft;
+            const labelWidth = 54;
+            const barX = x + labelWidth + 4;
+            const barWidth = 82;
+            const rowHeight = 6;
+            const maxScore = 6;
+
+            y = checkPageBreak(doc, y, 18);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Escala visual: 0 a 6. As cores indicam status do esquema.', x, y);
+            y += 6;
+
+            entries.forEach(entry => {
+                y = checkPageBreak(doc, y, rowHeight + 2);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.2);
+                setTextColorHex(doc, PDF_THEME.text);
+                const nameLines = doc.splitTextToSize(entry.schema.nome, labelWidth);
+                doc.text(nameLines.slice(0, 1), x, y + 3.5);
+
+                setFillColorHex(doc, '#E8ECEF');
+                doc.roundedRect(barX, y, barWidth, 3.2, 1.2, 1.2, 'F');
+
+                const filled = Math.max(0, Math.min(barWidth, (entry.mean / maxScore) * barWidth));
+                setFillColorHex(doc, getStatusColor(entry.status));
+                doc.roundedRect(barX, y, filled, 3.2, 1.2, 1.2, 'F');
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(7.2);
+                setTextColorHex(doc, PDF_THEME.text);
+                doc.text(entry.mean.toFixed(2), barX + barWidth + 4, y + 3.2);
+
+                y += rowHeight;
+            });
+
+            return y + 5;
+        }
+
+        function addSignatureBlock(doc, y, data) {
+            y = checkPageBreak(doc, y, 38);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            setTextColorHex(doc, PDF_THEME.text);
+            doc.text(data.cityDate + '.', PDF_LAYOUT.marginLeft, y);
+            y += 18;
+
+            const center = PDF_LAYOUT.pageWidth / 2;
+            setDrawColorHex(doc, PDF_THEME.text);
+            doc.setLineWidth(0.25);
+            doc.line(center - 42, y, center + 42, y);
+
+            y += 6;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            setTextColorHex(doc, PDF_THEME.text);
+            doc.text('Richelmy Murta∴ Pinto', center, y, {
+                align: 'center'
+            });
+
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.5);
+            doc.text('Psicólogo Clínico – CRP 04/54.383', center, y, {
+                align: 'center'
+            });
+
+            return y + 8;
+        }
+
+        function generatePdfReport() {
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                alert('Não foi possível carregar a biblioteca de PDF. Verifique sua conexão e tente novamente.');
+                return;
+            }
+
+            const data = buildPdfData();
+            if (!data || !data.results) {
+                alert('Gere os resultados antes de baixar o relatório.');
+                return;
+            }
+
+            const doc = new window.jspdf.jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: true
+            });
+
+            let y = addPdfHeader(doc, 1);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            setTextColorHex(doc, PDF_THEME.blue);
+            doc.text('Mapa de Esquemas – Inventário de Padrões Emocionais', PDF_LAYOUT.pageWidth / 2, y, {
+                align: 'center'
+            });
+
+            y += 7;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Relatório psicoeducativo de rastreio clínico', PDF_LAYOUT.pageWidth / 2, y, {
+                align: 'center'
+            });
+
+            y += 8;
+
+            y = addInfoBox(
+                doc,
+                'Nota de uso técnico',
+                'Este relatório tem finalidade psicoeducativa e serve como apoio à reflexão clínica em psicoterapia. Os resultados são indicativos e não constituem diagnóstico psicológico, psiquiátrico ou médico. A interpretação adequada depende da integração com entrevista clínica, história de vida, contexto atual e acompanhamento profissional. Em caso de sofrimento intenso, risco à integridade ou urgência emocional, recomenda-se buscar imediatamente serviços de saúde, emergência ou rede de apoio local.',
+                y,
+                {
+                    fontSize: 9,
+                    lineHeight: 4.5
+                }
+            );
+
+            y = addIdentificationBox(doc, data, y);
+
+            y = addSectionTitle(doc, '1. Apresentação', y);
+            y = addWrappedText(
+                doc,
+                'O Mapa de Esquemas – Inventário de Padrões Emocionais é uma ferramenta psicoeducativa de rastreio, organizada para apoiar a identificação de padrões emocionais compatíveis com Esquemas Iniciais Desadaptativos. Os esquemas não descrevem a pessoa em sua totalidade; eles indicam hipóteses de funcionamento emocional que podem ser discutidas em psicoterapia.\n\nOs estilos de enfrentamento apontam modos habituais de lidar com a dor emocional ativada pelo esquema. A resignação tende a aceitar o padrão como verdade; a evitação reduz o contato com emoções, situações ou vínculos ativadores; a hipercompensação reage no extremo oposto, muitas vezes com rigidez ou excesso de controle.',
+                PDF_LAYOUT.marginLeft,
+                y,
+                PDF_LAYOUT.contentWidth,
+                5.2,
+                {
+                    firstLineIndent: 6
+                }
+            );
+
+            y = addSectionTitle(doc, '2. Síntese interpretativa', y);
+            const styleSummary = countActiveStyles(data.active);
+            const synthesisName = data.name === 'Não informado' ? 'A pessoa avaliada' : data.name;
+            const synthesisText =
+                `${synthesisName} apresentou ${data.active.length} esquema(s) ativo(s) e ${data.latent.length} esquema(s) latente(s). Entre os esquemas ativos, a distribuição de estilos predominantes foi: ${styleSummary}. Esses dados sugerem hipóteses clínicas iniciais e devem ser interpretados com cautela, considerando história de vida, contexto atual, sofrimento relatado, vínculos significativos e objetivos terapêuticos.\n\nA presença de esquemas ativos não deve ser compreendida como diagnóstico. Ela pode indicar áreas de maior sensibilidade emocional, padrões de repetição ou necessidades emocionais que merecem investigação clínica. Já os esquemas latentes podem funcionar como vulnerabilidades em segundo plano, especialmente em períodos de estresse, perdas, conflitos, transições ou sobrecarga.`;
+
+            y = addWrappedText(doc, synthesisText, PDF_LAYOUT.marginLeft, y, PDF_LAYOUT.contentWidth, 5.2, {
+                firstLineIndent: 6
+            });
+
+            y = addSectionTitle(doc, '3. Esquemas ativos', y);
+
+            if (data.active.length === 0) {
+                y = addInfoBox(
+                    doc,
+                    'Resultado',
+                    'Nenhum esquema apareceu claramente ativo neste momento. Ainda assim, os esquemas latentes e o padrão geral de respostas podem ser úteis para reflexão clínica em psicoterapia.',
+                    y,
+                    {
+                        fill: '#F8FAFC'
+                    }
+                );
+            } else {
+                data.active.forEach(entry => {
+                    y = addClinicalBox(doc, entry, y);
+                });
+            }
+
+            y = addSectionTitle(doc, '4. Esquemas latentes', y);
+
+            if (data.latent.length === 0) {
+                y = addWrappedText(
+                    doc,
+                    'Nenhum esquema apareceu como latente neste momento. Essa leitura deve ser compreendida apenas dentro dos limites do instrumento e das respostas fornecidas.',
+                    PDF_LAYOUT.marginLeft,
+                    y,
+                    PDF_LAYOUT.contentWidth,
+                    5.2
+                );
+            } else {
+                y = addWrappedText(
+                    doc,
+                    'Os esquemas latentes podem funcionar como vulnerabilidades em segundo plano, sendo ativados por contextos específicos, estresse, perdas, conflitos, sobrecarga ou relações emocionalmente significativas.',
+                    PDF_LAYOUT.marginLeft,
+                    y,
+                    PDF_LAYOUT.contentWidth,
+                    5.2
+                );
+
+                data.latent.forEach(entry => {
+                    y = checkPageBreak(doc, y, 6);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9.2);
+                    setTextColorHex(doc, PDF_THEME.text);
+                    doc.text(
+                        `• ${entry.schema.nome} | Média ${entry.mean.toFixed(2)} | ${entry.schema.dominio} | Estilo: ${entry.styleLabel}`,
+                        PDF_LAYOUT.marginLeft + 4,
+                        y,
+                        {
+                            maxWidth: PDF_LAYOUT.contentWidth - 4
+                        }
+                    );
+                    y += 5;
+                });
+
+                y += 2;
+            }
+
+            y = addSectionTitle(doc, '5. Tabela completa dos resultados', y);
+            y = addResultsTable(doc, data.results, y);
+
+            y = addSectionTitle(doc, '6. Representação visual dos escores', y);
+            y = addScoresBars(doc, data.results, y);
+
+            y = addSectionTitle(doc, '7. Psicoeducação geral sobre esquemas e estilos', y);
+            y = addWrappedText(
+                doc,
+                'Os Esquemas Iniciais Desadaptativos costumam se formar a partir da interação entre temperamento, experiências repetidas e necessidades emocionais básicas que não foram suficientemente atendidas. Eles funcionam como mapas internos de previsão: ajudam a interpretar o mundo, mas podem manter respostas antigas mesmo quando a situação atual já é diferente.\n\nUm esquema ativo indica maior frequência ou intensidade do padrão no momento da aplicação. Um esquema latente sugere uma vulnerabilidade que pode ser acionada em circunstâncias específicas. Um esquema ausente indica que aquele padrão não apareceu como foco relevante neste rastreio, sem excluir a necessidade de avaliação clínica mais ampla.\n\nOs estilos de enfrentamento mostram como a pessoa tende a lidar com a ativação do esquema. Na resignação, o padrão é aceito e repetido. Na evitação, a pessoa se afasta de emoções, vínculos ou situações que poderiam ativar desconforto. Na hipercompensação, há uma reação no extremo oposto, frequentemente com rigidez, controle ou intensidade defensiva. O trabalho psicoterapêutico busca reconhecer esses ciclos e construir respostas mais saudáveis, contextualizadas e compatíveis com a vida atual.',
+                PDF_LAYOUT.marginLeft,
+                y,
+                PDF_LAYOUT.contentWidth,
+                5.2,
+                {
+                    firstLineIndent: 6
+                }
+            );
+
+            y = addSectionTitle(doc, '8. Psicoeducação específica dos esquemas ativos', y);
+
+            if (data.active.length === 0) {
+                y = addWrappedText(
+                    doc,
+                    'Como nenhum esquema apareceu claramente ativo, esta seção não apresenta psicoeducação específica por esquema. A discussão clínica pode priorizar o padrão geral de respostas e eventuais esquemas latentes.',
+                    PDF_LAYOUT.marginLeft,
+                    y,
+                    PDF_LAYOUT.contentWidth,
+                    5.2
+                );
+            } else {
+                data.active.forEach(entry => {
+                    const info = schemaPsycho[entry.schema.id];
+                    y = addSubsectionTitle(doc, `${entry.schema.nome} – ${entry.styleLabel}`, y);
+                    const text = `${info ? info.definicao + ' ' + info.origem + '\n\n' : ''}${getFocusedPsychoeducation(entry)}`;
+                    y = addWrappedText(doc, text, PDF_LAYOUT.marginLeft, y, PDF_LAYOUT.contentWidth, 5.0, {
+                        firstLineIndent: 6
+                    });
+                });
+            }
+
+            y = addSectionTitle(doc, '9. Recomendações de uso clínico', y);
+            y = addInfoBox(
+                doc,
+                'Orientações de integração terapêutica',
+                'Leve este relatório para a sessão de psicoterapia e utilize os esquemas ativos como hipóteses de trabalho, não como rótulos. Observe gatilhos cotidianos, pensamentos automáticos, emoções, sensações corporais e comportamentos associados. O objetivo clínico não é confirmar defeitos pessoais, mas compreender padrões aprendidos e construir respostas mais saudáveis com acompanhamento profissional. Evite usar este relatório para autodiagnóstico ou para rotular terceiros.',
+                y,
+                {
+                    fill: '#F8FAFC',
+                    fontSize: 9,
+                    lineHeight: 4.5
+                }
+            );
+
+            y = addSectionTitle(doc, '10. Nota ética e limites do instrumento', y);
+            y = addWrappedText(
+                doc,
+                'Este instrumento possui finalidade psicoeducativa e de rastreio. Seus resultados não substituem avaliação psicológica formal, entrevista clínica, psicoterapia, consulta médica ou psiquiátrica. A interpretação deve considerar história de vida, contexto atual, sofrimento relatado, funcionamento global e objetivos terapêuticos. Em situações de risco, urgência emocional ou sofrimento intenso, recomenda-se buscar atendimento imediato em serviços de saúde, emergência ou rede de apoio local.',
+                PDF_LAYOUT.marginLeft,
+                y,
+                PDF_LAYOUT.contentWidth,
+                5.2,
+                {
+                    firstLineIndent: 6
+                }
+            );
+
+            y = addSignatureBlock(doc, y + 4, data);
+
+            const totalPages = doc.internal.getNumberOfPages();
+            for (let page = 1; page <= totalPages; page++) {
+                doc.setPage(page);
+                addPdfFooter(doc, page, totalPages);
+            }
+
+            const safeName = sanitizeFileName(data.name === 'Não informado' ? 'Paciente' : data.name);
+            const dateForFile = getIsoDateSafe(data.applicationDate);
+            const fileName = `Relatorio_Mapa_de_Esquemas_${safeName}_${dateForFile}.pdf`;
+
+            doc.save(fileName);
+        }
+
+        if (downloadPdfReportBtn) {
+            downloadPdfReportBtn.addEventListener('click', generatePdfReport);
         }
     </script>
 </body>
