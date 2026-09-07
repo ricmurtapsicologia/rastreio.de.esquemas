@@ -1,4 +1,4 @@
-# activation: 1
+# activation: 2
 name: Native Form Structure v1
 
 on:
@@ -64,7 +64,7 @@ jobs:
               raise SystemExit('NON_CLINICAL_CONTROLS_INSIDE_FORM')
 
           buttons=re.findall(r'<button\b[^>]*>',html,re.I)
-          if len(buttons) != 9:
+          if len(buttons) != 14:
               raise SystemExit(f'UNEXPECTED_STATIC_BUTTON_COUNT_{len(buttons)}')
           unsafe=[b for b in buttons if not re.search(r'\btype="button"',b,re.I)]
           if unsafe:
