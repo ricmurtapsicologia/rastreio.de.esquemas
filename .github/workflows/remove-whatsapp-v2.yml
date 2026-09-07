@@ -18,17 +18,17 @@ jobs:
           from pathlib import Path
           import re
           p=Path('index.html'); s=p.read_text(encoding='utf-8'); before=s
-          # Patient-facing copy and controls.
           s=s.replace('Você pode enviar um resumo dos seus resultados diretamente para seu psicólogo via WhatsApp, compartilhar a página\n                ou baixar um relatório psicoeducativo em PDF para reflexão e discussão em terapia.', 'O resultado será integrado à análise clínica pelo psicólogo responsável.')
           s=re.sub(r'\s*<button\s+class=["\']btn btn-whatsapp["\']\s+id=["\']sendWhatsApp["\'][^>]*>.*?</button>\s*','\n',s,count=1,flags=re.S|re.I)
           s=re.sub(r'\s*<button\s+class=["\']btn btn-secondary["\']\s+id=["\']sharePageWhatsApp["\'][^>]*>.*?</button>\s*','\n',s,count=1,flags=re.S|re.I)
-          # References and message builder.
           s=re.sub(r"\s*const\s+sendWhatsAppBtn\s*=\s*document\.getElementById\(['\"]sendWhatsApp['\"]\);",'',s,count=1)
           s=re.sub(r"\s*const\s+sharePageWhatsAppBtn\s*=\s*document\.getElementById\(['\"]sharePageWhatsApp['\"]\);",'',s,count=1)
-          s=re.sub(r'\s*function\s+buildWhatsAppMessage\s*\(\)\s*\{.*?return\s+headerLines\.concat\(\s*["\']?["\']?\s*,\s*bodyLines\)\.join\(["\']\\n["\']\);\s*\}\s*','\n',s,count=1,flags=re.S|re.I)
-          s=re.sub(r'\s*if\s*\(sendWhatsAppBtn\)\s*\{.*?\n\s*\}\s*\n\s*if\s*\(sharePageWhatsAppBtn\)\s*\{.*?\n\s*\}\s*','\n',s,count=1,flags=re.S)
-          # Remaining style dedicated to WhatsApp, if present.
-          s=re.sub(r'\s*\.btn-whatsapp\s*\{[^}]*\}', '', s, flags=re.S|re.I)
+          # Remove the result-message builder as a whole, stopping at its dedicated event block.
+          s=re.sub(r'\s*function\s+buildWhatsAppMessage\s*\(\)\s*\{.*?(?=\s*if\s*\(sendWhatsAppBtn\))','\n',s,count=1,flags=re.S|re.I)
+          # Remove both WhatsApp event blocks, stopping before the PDF implementation.
+          s=re.sub(r'\s*if\s*\(sendWhatsAppBtn\)\s*\{.*?(?=\s*const\s+PDF_THEME\s*=)','\n',s,count=1,flags=re.S|re.I)
+          # Remove all dedicated WhatsApp CSS variants.
+          s=re.sub(r'\s*(?:body\.theme-dark\s+)?\.btn-whatsapp(?::hover)?\s*\{[^}]*\}', '', s, flags=re.S|re.I)
           if s==before: raise SystemExit('NO_WHATSAPP_CHANGE')
           p.write_text(s,encoding='utf-8')
           PY
@@ -39,7 +39,7 @@ jobs:
           import re
           s=Path('index.html').read_text(encoding='utf-8')
           if re.search(r'wa\.me|sendWhatsApp|sharePageWhatsApp|buildWhatsAppMessage|btn-whatsapp',s,re.I): raise SystemExit('WHATSAPP_RESIDUE')
-          for marker in ['id="questionnaire"','id="calculateResults"','const schemas =','const questions =']:
+          for marker in ['id="questionnaire"','id="calculateResults"','const schemas =','const questions =','const PDF_THEME =']:
               if marker not in s: raise SystemExit('QUESTIONNAIRE_STRUCTURE_CHANGED:'+marker)
           PY
       - name: Commit
