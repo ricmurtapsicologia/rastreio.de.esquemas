@@ -727,23 +727,6 @@
         #actionsSection .btn-row {
             justify-content: center;
         }
-
-        .btn-whatsapp {
-            background-color: #25d366;
-            color: #ffffff;
-            border: none;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35);
-        }
-
-        .btn-whatsapp:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 14px 36px rgba(37, 211, 102, 0.45);
-        }
-
-        body.theme-dark .btn-whatsapp {
-            background-color: #25d366;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.45);
-        }
     </style>
   <link rel="stylesheet" href="https://ricmurtapsicologia.github.io/plataforma.terapeutica/assets/css/screening-uniformity-v1.css?v=1.0.0">
 </head>
@@ -1005,14 +988,11 @@
                 <span class="card-tag">Próximos passos</span>
             </div>
             <p class="muted">
-                Você pode enviar um resumo dos seus resultados diretamente para seu psicólogo via WhatsApp, compartilhar a página
-                ou baixar um relatório psicoeducativo em PDF para reflexão e discussão em terapia.
+                O resultado será integrado à análise clínica pelo psicólogo responsável.
             </p>
             <div class="privacy-chip">🔒 O PDF é gerado localmente no navegador. Nenhum dado é enviado automaticamente.</div>
             <div class="btn-row">
-                <button class="btn btn-whatsapp" id="sendWhatsApp">Enviar resumo ao meu psicólogo</button>
-                <button class="btn btn-secondary" id="sharePageWhatsApp">Compartilhar esta página com amigos</button>
-                <button class="btn btn-secondary btn-download" id="downloadPdfReport">Baixar relatório em PDF</button>
+<button class="btn btn-secondary btn-download" id="downloadPdfReport">Baixar relatório em PDF</button>
             </div>
         </section>
 
@@ -2184,8 +2164,6 @@
         const calculateResultsBtn = document.getElementById('calculateResults');
         const resultsIntro = document.getElementById('resultsIntro');
         const resultsTableWrapper = document.getElementById('resultsTableWrapper');
-        const sendWhatsAppBtn = document.getElementById('sendWhatsApp');
-        const sharePageWhatsAppBtn = document.getElementById('sharePageWhatsApp');
         const downloadPdfReportBtn = document.getElementById('downloadPdfReport');
         const perSchemaPsychoDiv = document.getElementById('perSchemaPsycho');
 
@@ -2656,82 +2634,6 @@
             }
         }
 
-        function buildWhatsAppMessage() {
-            const results = window._mapaEsquemasResults || null;
-            if (!results || !Object.keys(results).length) {
-                return null;
-            }
-
-            const nome = nomeInput?.value?.trim() || 'Paciente';
-            const idade = idadeInput?.value?.trim();
-            const dataAp = dataInput?.value?.trim();
-
-            const headerLines = [];
-            headerLines.push(`*Mapa de Esquemas – Inventário de Padrões Emocionais*`);
-            headerLines.push(`Nome: ${nome}`);
-            if (idade) headerLines.push(`Idade: ${idade} anos`);
-            if (dataAp) headerLines.push(`Data de aplicação: ${formatDateBR(dataAp)}`);
-            headerLines.push('');
-
-            const ativos = [];
-            const latentes = [];
-
-            Object.values(results).forEach(entry => {
-                const mean = entry.count > 0 ? entry.mean.toFixed(2) : '-';
-                const baseLine = `${entry.schema.nome} (média: ${mean}) – Estilo: ${entry.styleLabel}`;
-                if (entry.status === 'ativo') {
-                    ativos.push(`• ${baseLine}`);
-                } else if (entry.status === 'latente') {
-                    latentes.push(`• ${baseLine}`);
-                }
-            });
-
-            const bodyLines = [];
-
-            if (ativos.length > 0) {
-                bodyLines.push(`*Esquemas ativos (maior relevância clínica):*`);
-                bodyLines.push(...ativos);
-                bodyLines.push('');
-            } else {
-                bodyLines.push(`Nenhum esquema apareceu claramente *ativo* neste momento.`);
-                bodyLines.push('');
-            }
-
-            if (latentes.length > 0) {
-                bodyLines.push(`*Esquemas latentes (vulnerabilidades em segundo plano):*`);
-                bodyLines.push(...latentes);
-                bodyLines.push('');
-            }
-
-            bodyLines.push(`Observação: este resultado é um rastreio psicoeducativo e deve ser integrado à avaliação clínica e à sua história em psicoterapia.`);
-
-            return headerLines.concat('', bodyLines).join('\n');
-        }
-
-        if (sendWhatsAppBtn) {
-            sendWhatsAppBtn.addEventListener('click', () => {
-                const msg = buildWhatsAppMessage();
-                if (!msg) {
-                    alert('Gere os resultados antes de enviar o resumo pelo WhatsApp.');
-                    return;
-                }
-                const encoded = encodeURIComponent(msg);
-                const phone = '5535984640729';
-                const url = `https://wa.me/${phone}?text=${encoded}`;
-
-                window.open(url, '_blank');
-            });
-        }
-
-        if (sharePageWhatsAppBtn) {
-            sharePageWhatsAppBtn.addEventListener('click', () => {
-                const pageUrl = 'https://ricmurtapsicologia.github.io/rastreio.de.esquemas/';
-                const message = `Quero compartilhar com você esta ferramenta de autoconhecimento baseada em Terapia do Esquema: Mapa de Esquemas – Inventário de Padrões Emocionais. Acesse: ${pageUrl}`;
-                const encoded = encodeURIComponent(message);
-                const url = `https://wa.me/?text=${encoded}`;
-                window.open(url, '_blank');
-            });
-        }
 
         const PDF_THEME = {
             blue: '#0F2A3D',
