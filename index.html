@@ -734,7 +734,7 @@
 <body>
     <div class="container">
         <header>
-            <button class="theme-toggle" id="themeToggle">
+            <button type="button" class="theme-toggle" id="themeToggle">
                 <span>🌗</span><span>Tema claro/escuro</span>
             </button>
         </header>
@@ -774,7 +774,7 @@
                 procure ajuda imediata em serviços de saúde da sua região.
             </p>
             <div class="btn-row">
-                <button class="btn btn-primary" id="goConsent">Continuar</button>
+                <button type="button" class="btn btn-primary" id="goConsent">Continuar</button>
                 <button class="btn btn-ghost" id="learnEidsBtn" type="button">
                     Saiba mais sobre EIDs
                 </button>
@@ -786,7 +786,7 @@
             <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="eidsModalTitle">
                 <div class="modal-card-header">
                     <div class="card-title" id="eidsModalTitle">O que são EIDs?</div>
-                    <button class="modal-close" id="closeEidsModal" aria-label="Fechar">✕</button>
+                    <button type="button" class="modal-close" id="closeEidsModal" aria-label="Fechar">✕</button>
                 </div>
                 <p class="muted">
                     <strong>Esquemas Iniciais Desadaptativos</strong> são padrões emocionais e de pensamento muito antigos, normalmente formados
@@ -801,7 +801,7 @@
                     cuidadosas e equilibradas de se proteger, se relacionar e se posicionar.
                 </p>
                 <div class="btn-row" style="justify-content:flex-end;margin-top:10px;">
-                    <button class="btn btn-secondary" id="closeEidsModal2">Entendi</button>
+                    <button type="button" class="btn btn-secondary" id="closeEidsModal2">Entendi</button>
                 </div>
             </div>
         </div>
@@ -824,10 +824,12 @@
                 o resultado apenas como apoio à conversa com seu psicólogo(a)/psiquiatra.
             </p>
             <div class="btn-row">
-                <button class="btn btn-primary" id="acceptConsent">Aceito e desejo continuar</button>
-                <button class="btn btn-secondary" id="backToIntro">Voltar</button>
+                <button type="button" class="btn btn-primary" id="acceptConsent">Aceito e desejo continuar</button>
+                <button type="button" class="btn btn-secondary" id="backToIntro">Voltar</button>
             </div>
         </section>
+
+        <form id="screeningForm" novalidate onsubmit="return false;">
 
         <section id="userdataSection" class="card hidden">
             <div class="card-header">
@@ -862,8 +864,8 @@
                 para organização clínica e devem ser preenchidos antes de iniciar o questionário.
             </p>
             <div class="btn-row">
-                <button class="btn btn-primary" id="goQuestionnaire">Iniciar questionário</button>
-                <button class="btn btn-secondary" id="backToConsent">Voltar</button>
+                <button type="button" class="btn btn-primary" id="goQuestionnaire">Iniciar questionário</button>
+                <button type="button" class="btn btn-secondary" id="backToConsent">Voltar</button>
             </div>
         </section>
 
@@ -900,8 +902,8 @@
             <div id="questionsContainer"></div>
 
             <div class="btn-row">
-                <button class="btn btn-secondary" id="prevBlock">Anterior</button>
-                <button class="btn btn-primary" id="nextBlock">Próximo bloco</button>
+                <button type="button" class="btn btn-secondary" id="prevBlock">Anterior</button>
+                <button type="button" class="btn btn-primary" id="nextBlock">Próximo bloco</button>
             </div>
         </section>
 
@@ -913,8 +915,8 @@
             <p class="muted" id="reviewSummary"></p>
             <div id="missingList" class="muted" style="font-size:0.8rem;"></div>
             <div class="btn-row">
-                <button class="btn btn-secondary" id="backToQuestions">Voltar ao questionário</button>
-                <button class="btn btn-primary" id="calculateResults">Corrigir e gerar resultados</button>
+                <button type="button" class="btn btn-secondary" id="backToQuestions">Voltar ao questionário</button>
+                <button type="button" class="btn btn-primary" id="calculateResults">Corrigir e gerar resultados</button>
             </div>
         </section>
 
@@ -996,9 +998,11 @@
             </p>
             <div class="privacy-chip">🔒 O PDF é gerado localmente no navegador. Nenhum dado é enviado automaticamente.</div>
             <div class="btn-row">
-<button class="btn btn-secondary btn-download" id="downloadPdfReport">Baixar relatório em PDF</button>
+<button type="button" class="btn btn-secondary btn-download" id="downloadPdfReport">Baixar relatório em PDF</button>
             </div>
         </section>
+
+        </form>
 
         <footer>
             <div>© 2026 Richelmy Murta - Todos os direitos reservados</div>
