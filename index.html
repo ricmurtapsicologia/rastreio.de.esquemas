@@ -842,20 +842,24 @@
             <div class="form-row">
                 <div class="field">
                     <label for="nomeCompleto">Nome completo</label>
-                    <input type="text" id="nomeCompleto" maxlength="80" placeholder="Ex.: Ana Souza">
+                    <input type="text" id="nomeCompleto" maxlength="80" placeholder="Ex.: Ana Souza" required>
                 </div>
                 <div class="field">
                     <label for="idade">Idade</label>
                     <input type="number" id="idade" min="10" max="100" placeholder="Ex.: 35">
                 </div>
                 <div class="field">
-                    <label for="dataAplicacao">Data</label>
-                    <input type="date" id="dataAplicacao">
+                    <label for="dataNascimento">Data de nascimento</label>
+                    <input type="date" id="dataNascimento" required>
+                </div>
+                <div class="field">
+                    <label for="dataAplicacao">Data de aplicação do rastreio</label>
+                    <input type="date" id="dataAplicacao" required>
                 </div>
             </div>
             <p class="helper">
-                Você poderá revisar todas as respostas antes de gerar seus resultados. O nome completo é útil para
-                organizar a mensagem ao psicólogo e o relatório, mas não bloqueia o uso se for deixado em branco.
+                Você poderá revisar todas as respostas antes de gerar seus resultados. Nome completo, data de nascimento e data de aplicação identificam corretamente o rastreio
+                para organização clínica e devem ser preenchidos antes de iniciar o questionário.
             </p>
             <div class="btn-row">
                 <button class="btn btn-primary" id="goQuestionnaire">Iniciar questionário</button>
