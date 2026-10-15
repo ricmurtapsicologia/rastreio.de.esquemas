@@ -1,0 +1,2550 @@
+
+        const themeToggle = document.getElementById('themeToggle');
+        const storedTheme = localStorage.getItem('mapaEsquemasTheme');
+
+        if (storedTheme === 'dark') {
+            document.body.classList.add('theme-dark');
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('theme-dark');
+                localStorage.setItem(
+                    'mapaEsquemasTheme',
+                    document.body.classList.contains('theme-dark') ? 'dark' : 'light'
+                );
+                if (window.schemasChartInstance) {
+                    applyChartTheme(window.schemasChartInstance);
+                    window.schemasChartInstance.update();
+                }
+            });
+        }
+
+        const learnEidsBtn = document.getElementById('learnEidsBtn');
+        const eidsModal = document.getElementById('eidsModal');
+        const closeEidsModal = document.getElementById('closeEidsModal');
+        const closeEidsModal2 = document.getElementById('closeEidsModal2');
+        const eidsBackdrop = eidsModal ? eidsModal.querySelector('.modal-backdrop') : null;
+
+        function openEidsModal() {
+            if (!eidsModal) return;
+            eidsModal.classList.remove('hidden');
+            eidsModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeEids() {
+            if (!eidsModal) return;
+            eidsModal.classList.add('hidden');
+            eidsModal.setAttribute('aria-hidden', 'true');
+        }
+
+        if (learnEidsBtn) learnEidsBtn.addEventListener('click', openEidsModal);
+        if (closeEidsModal) closeEidsModal.addEventListener('click', closeEids);
+        if (closeEidsModal2) closeEidsModal2.addEventListener('click', closeEids);
+        if (eidsBackdrop) eidsBackdrop.addEventListener('click', closeEids);
+
+        const introSection = document.getElementById('introSection');
+        const consentSection = document.getElementById('consentSection');
+        const userdataSection = document.getElementById('userdataSection');
+        const questionnaireSection = document.getElementById('questionnaireSection');
+        const reviewSection = document.getElementById('reviewSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const actionsSection = document.getElementById('actionsSection');
+
+        const goConsent = document.getElementById('goConsent');
+        const backToIntro = document.getElementById('backToIntro');
+        const acceptConsent = document.getElementById('acceptConsent');
+        const goQuestionnaire = document.getElementById('goQuestionnaire');
+        const backToConsent = document.getElementById('backToConsent');
+        const backToQuestions = document.getElementById('backToQuestions');
+
+        function scrollToQuestionnaire() {
+            if (!questionnaireSection) return;
+            questionnaireSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            questionnaireSection.focus({
+                preventScroll: true
+            });
+        }
+
+        if (goConsent) {
+            goConsent.addEventListener('click', () => {
+                introSection.classList.add('hidden');
+                consentSection.classList.remove('hidden');
+            });
+        }
+
+        if (backToIntro) {
+            backToIntro.addEventListener('click', () => {
+                consentSection.classList.add('hidden');
+                introSection.classList.remove('hidden');
+            });
+        }
+
+        if (acceptConsent) {
+            acceptConsent.addEventListener('click', () => {
+                consentSection.classList.add('hidden');
+                userdataSection.classList.remove('hidden');
+            });
+        }
+
+        if (backToConsent) {
+            backToConsent.addEventListener('click', () => {
+                userdataSection.classList.add('hidden');
+                consentSection.classList.remove('hidden');
+            });
+        }
+
+        if (backToQuestions) {
+            backToQuestions.addEventListener('click', () => {
+                reviewSection.classList.add('hidden');
+                questionnaireSection.classList.remove('hidden');
+                scrollToQuestionnaire();
+            });
+        }
+
+        const nomeInput = document.getElementById('nomeCompleto');
+        const idadeInput = document.getElementById('idade');
+        const dataInput = document.getElementById('dataAplicacao');
+
+        if (dataInput && !dataInput.value) {
+            const today = new Date();
+            const tzDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+            dataInput.value = tzDate.toISOString().slice(0, 10);
+        }
+
+        const schemas = [{
+                id: 'PE',
+                nome: 'Privação Emocional',
+                dominio: 'Desconexão e Rejeição',
+                descricao_curta: 'Sensação de que as necessidades emocionais básicas não serão atendidas de forma estável.'
+            },
+            {
+                id: 'AB',
+                nome: 'Abandono/Instabilidade',
+                dominio: 'Desconexão e Rejeição',
+                descricao_curta: 'Medo intenso de ser abandonado(a) ou de que as pessoas importantes desapareçam.'
+            },
+            {
+                id: 'DA',
+                nome: 'Desconfiança/Abuso',
+                dominio: 'Desconexão e Rejeição',
+                descricao_curta: 'Expectativa de que os outros irão machucar, enganar ou humilhar.'
+            },
+            {
+                id: 'SI',
+                nome: 'Isolamento Social/Alienação',
+                dominio: 'Desconexão e Rejeição',
+                descricao_curta: 'Sentir-se diferente, excluído(a) ou desconectado(a) dos grupos.'
+            },
+            {
+                id: 'DI',
+                nome: 'Defectividade/Vergonha',
+                dominio: 'Desconexão e Rejeição',
+                descricao_curta: 'Sentimento de ser defeituoso(a), inferior ou indigno(a) de amor.'
+            },
+            {
+                id: 'FD',
+                nome: 'Fracasso',
+                dominio: 'Autonomia e Desempenho Prejudicados',
+                descricao_curta: 'Crença de que é um fracasso ou não será capaz de ter sucesso como os outros.'
+            },
+            {
+                id: 'DIIN',
+                nome: 'Dependência/Incompetência',
+                dominio: 'Autonomia e Desempenho Prejudicados',
+                descricao_curta: 'Sentir-se incapaz de lidar sozinho(a) com tarefas e responsabilidades diárias.'
+            },
+            {
+                id: 'VV',
+                nome: 'Vulnerabilidade ao Dano/Doença',
+                dominio: 'Autonomia e Desempenho Prejudicados',
+                descricao_curta: 'Medo intenso de catástrofes, doenças graves ou acidentes.'
+            },
+            {
+                id: 'EM',
+                nome: 'Emaranhamento/Self Subdesenvolvido',
+                dominio: 'Autonomia e Desempenho Prejudicados',
+                descricao_curta: 'Dificuldade em sentir-se separado(a) emocionalmente de pessoas importantes.'
+            },
+            {
+                id: 'SB',
+                nome: 'Subjugação',
+                dominio: 'Outrificação',
+                descricao_curta: 'Tendência a ceder demais às vontades dos outros, com medo de conflitos ou rejeição.'
+            },
+            {
+                id: 'SA',
+                nome: 'Autossacrifício',
+                dominio: 'Outrificação',
+                descricao_curta: 'Colocar as necessidades dos outros sempre à frente das próprias, mesmo com custo emocional.'
+            },
+            {
+                id: 'AP',
+                nome: 'Aprovação/Busca por Reconhecimento',
+                dominio: 'Outrificação',
+                descricao_curta: 'Necessidade intensa de agradar e ser aprovado(a) para se sentir valioso(a).'
+            },
+            {
+                id: 'EC',
+                nome: 'Direitos Elevados/Grandiosidade',
+                dominio: 'Limites Prejudicados',
+                descricao_curta: 'Sentimento de ser especial, com direito a privilégios e regras diferentes.'
+            },
+            {
+                id: 'AI',
+                nome: 'Autocontrole/Autodisciplina Insuficientes',
+                dominio: 'Limites Prejudicados',
+                descricao_curta: 'Dificuldade em tolerar frustrações, cumprir rotinas e controlar impulsos.'
+            },
+            {
+                id: 'NP',
+                nome: 'Negatividade/Pessimismo',
+                dominio: 'Supervigilância e Inibição',
+                descricao_curta: 'Foco excessivo no lado negativo, riscos e possíveis problemas.'
+            },
+            {
+                id: 'IE',
+                nome: 'Inibição Emocional',
+                dominio: 'Supervigilância e Inibição',
+                descricao_curta: 'Tendência a bloquear sentimentos e espontaneidade para evitar críticas ou vergonha.'
+            },
+            {
+                id: 'PC',
+                nome: 'Padrões Inflexíveis/Crítica Exagerada',
+                dominio: 'Supervigilância e Inibição',
+                descricao_curta: 'Busca rígida por perfeição, alto desempenho e regras, com autocrítica intensa.'
+            },
+            {
+                id: 'PCO',
+                nome: 'Punitividade',
+                dominio: 'Supervigilância e Inibição',
+                descricao_curta: 'Crença de que erros merecem punição dura, com pouca tolerância a falhas.'
+            }
+        ];
+
+        const schemaPsycho = {
+            PE: {
+                titulo: 'Privação Emocional',
+                definicao: 'A pessoa sente, de forma crônica, que ninguém realmente a acolhe, cuida ou compreende. É como se sempre faltasse calor emocional, mesmo em relações importantes.',
+                origem: 'Costuma se desenvolver em contextos em que as figuras de cuidado foram frias, distantes, muito ocupadas ou pouco sensíveis às necessidades afetivas.',
+                resignado: 'Aceita relações frias, se acostuma com pouco carinho e internaliza a ideia de que “não adianta pedir nada, ninguém vai cuidar de mim”.',
+                evitativo: 'Evita demonstrar necessidades, distancia-se emocionalmente ou se anestesia com trabalho, telas, consumos ou distrações para não sentir a carência.',
+                hipercompensador: 'Adota postura de força extrema e autossuficiência, desdenhando de quem precisa de apoio, ao mesmo tempo em que esconde uma forte necessidade de ser cuidado(a).'
+            },
+            AB: {
+                titulo: 'Abandono/Instabilidade',
+                definicao: 'Medo intenso de que pessoas importantes se afastem, morram, troquem por outra ou deixem de amar. A proximidade afetiva parece sempre instável.',
+                origem: 'Geralmente ligado a separações, perdas, muita instabilidade relacional, pais imprevisíveis ou vínculos em que a pessoa se sentiu facilmente substituível.',
+                resignado: 'Tolera relações inseguras, ciumentas ou intermitentes, aceitando migalhas de presença por medo de ficar só.',
+                evitativo: 'Evita se apegar profundamente, corta vínculos cedo ou se envolve com pessoas indisponíveis para não sentir o risco real de abandono.',
+                hipercompensador: 'Torna-se controlador(a), ciumento(a), testa a lealdade do outro, cria crises ou dramatiza situações para garantir provas de que não será abandonado(a).'
+            },
+            DA: {
+                titulo: 'Desconfiança/Abuso',
+                definicao: 'Expectativa de que, cedo ou tarde, alguém irá machucar, enganar, humilhar ou se aproveitar. A tendência é interpretar o mundo como perigoso e hostil.',
+                origem: 'Comum em histórias com abuso físico, sexual, emocional, bullying, humilhações ou ambientes muito imprevisíveis e agressivos.',
+                resignado: 'Tolera relações em que é maltratado(a), acreditando que “é assim mesmo”, ou que todos vão ferir de algum modo.',
+                evitativo: 'Fecha-se emocionalmente, evita intimidade, não compartilha vulnerabilidades para não oferecer “material” que possa ser usado contra si.',
+                hipercompensador: 'Ataca primeiro, vive na defensiva, testa a lealdade das pessoas e pode parecer hostil, irônico(a) ou agressivo(a) para não ser pego de surpresa.'
+            },
+            SI: {
+                titulo: 'Isolamento Social/Alienação',
+                definicao: 'Sensação persistente de ser diferente, estranho(a) ou de não pertencer a grupos, famílias ou ambientes sociais.',
+                origem: 'Pode surgir em contextos de rejeição social, bullying, mudanças frequentes de ambiente ou famílias em que a pessoa se sentia “fora do padrão”.',
+                resignado: 'Assume que não pertence, se conforma em ficar à margem, participa pouco e internaliza a ideia de que “não sou como os outros”.',
+                evitativo: 'Evita festas, grupos, exposições públicas, ficando mais isolado(a) para não se sentir deslocado(a) ou rejeitado(a).',
+                hipercompensador: 'Adota uma postura de “diferentão(a)”, excêntrico(a) ou superior, usando isso como armadura para lidar com a dor de não se sentir incluído(a).'
+            },
+            DI: {
+                titulo: 'Defectividade/Vergonha',
+                definicao: 'Vivência profunda de ser defeituoso(a), inadequado(a), indigno(a) de amor ou aceitação, com forte vergonha de quem se é.',
+                origem: 'Comum em famílias muito críticas, rígidas, com humilhações, comparações ou mensagens explícitas de que a pessoa “não é boa o bastante”.',
+                resignado: 'Aceita relações em que é desvalorizado(a), tolera críticas duras, sente-se naturalmente menor ou menos digno(a) que os outros.',
+                evitativo: 'Esconde partes da história, evita intimidade verdadeira, usa máscaras sociais para que ninguém conheça suas “falhas reais”.',
+                hipercompensador: 'Assume postura arrogante, perfeccionista ou grandiosa para encobrir a sensação interna de defeito, afastando quem poderia se aproximar de forma autêntica.'
+            },
+            FD: {
+                titulo: 'Fracasso',
+                definicao: 'Crença de que é menos capaz, inteligente ou competente que os outros, com expectativa intensa de falhar em áreas importantes.',
+                origem: 'Frequentemente vinculado a críticas sobre desempenho, comparações constantes com irmãos/colegas ou falta de apoio nas dificuldades de aprendizado.',
+                resignado: 'Evita tentar, se posiciona como “incapaz”, aceita papéis menores e se acostuma com a identidade de quem não dá conta.',
+                evitativo: 'Foge de desafios, provas, concursos, projetos maiores, preferindo não arriscar para não confirmar a crença de fracasso.',
+                hipercompensador: 'Trabalha em excesso, estuda demais ou busca altas conquistas para provar que não é um fracasso, mas sem conseguir se sentir suficientemente bom.'
+            },
+            DIIN: {
+                titulo: 'Dependência/Incompetência',
+                definicao: 'Sensação de não conseguir lidar sozinho(a) com decisões, responsabilidades e tarefas da vida adulta.',
+                origem: 'Surge em contextos de superproteção, controle excessivo, desautorização das iniciativas da criança ou falta de oportunidades de experimentar autonomia.',
+                resignado: 'Assume o papel de dependente, pedindo que outros decidam ou resolvam, reforçando a crença de incapacidade.',
+                evitativo: 'Adia decisões, evita assumir responsabilidades ou aprender coisas novas, preferindo que alguém “assuma o volante”.',
+                hipercompensador: 'Torna-se controlador(a), centralizador(a) e aparentemente muito seguro(a) para esconder medos de não dar conta sozinho(a).'
+            },
+            VV: {
+                titulo: 'Vulnerabilidade ao Dano/Doença',
+                definicao: 'Medo intenso e frequente de catástrofes, acidentes, doenças graves ou perdas repentinas.',
+                origem: 'Pode estar ligado a histórico de doenças na família, experiências traumáticas, perdas inesperadas ou ambientes em que se falava muito sobre tragédias.',
+                resignado: 'Vive em estado de alerta, aceita a ideia de que o mundo é extremamente perigoso e de que algo ruim está sempre prestes a acontecer.',
+                evitativo: 'Evita lugares, notícias, exames ou atividades que possam aumentar a sensação de risco, o que alivia a ansiedade, mas mantém o medo.',
+                hipercompensador: 'Busca excesso de informações, checagens e controles, impondo regras rígidas a si e aos outros para tentar “garantir segurança total”.'
+            },
+            EM: {
+                titulo: 'Emaranhamento/Self Subdesenvolvido',
+                definicao: 'Dificuldade em sentir-se separado(a) emocionalmente de figuras importantes, com pouca clareza de identidade própria.',
+                origem: 'Geralmente em famílias muito fusionadas, com pouco incentivo à autonomia, ou em relações em que havia culpa por se diferenciar.',
+                resignado: 'Abre mão de desejos e projetos pessoais para manter proximidade, aceitando viver “em função” de alguém.',
+                evitativo: 'Evita movimentos de individuação (morar sozinho, tomar decisões próprias) por medo de afastar ou magoar pessoas importantes.',
+                hipercompensador: 'Em alguns momentos rompe de forma brusca, assumindo postura de independência extrema para provar que não precisa de ninguém.'
+            },
+            SB: {
+                titulo: 'Subjugação',
+                definicao: 'Padrão de se colocar em segundo plano por medo de punição, raiva ou abandono, cedendo demais às vontades dos outros.',
+                origem: 'Comum em lares autoritários, com figuras dominadoras, explosivas ou pouco abertas ao diálogo.',
+                resignado: 'Diz pouco “não”, aceita decisões injustas e internaliza a ideia de que seus desejos valem menos.',
+                evitativo: 'Evita confrontos, engole raiva, silencia opiniões e se adapta para manter a paz a qualquer custo.',
+                hipercompensador: 'Após longos períodos de submissão, pode explodir, tornar-se controladora ou autoritária em algumas relações para não se sentir tão impotente.'
+            },
+            SA: {
+                titulo: 'Autossacrifício',
+                definicao: 'Tendência a colocar o bem-estar dos outros sempre acima do próprio, mesmo com alto custo emocional ou físico.',
+                origem: 'Frequentemente em contextos em que a pessoa foi valorizada por “ser forte”, “ajudar todos” ou responsabilizada precocemente pelos outros.',
+                resignado: 'Aceita viver exausto(a), cuidando de todos, e sente culpa ao tentar priorizar a si mesmo(a).',
+                evitativo: 'Evita pedir ajuda, esconde cansaço ou sofrimento, mantendo o foco constante nas demandas alheias.',
+                hipercompensador: 'Pode exibir, em alguns momentos, o quanto se sacrifica, esperando reconhecimento ou reagindo com ressentimento quando não recebe o mesmo em troca.'
+            },
+            AP: {
+                titulo: 'Aprovação/Busca por Reconhecimento',
+                definicao: 'Necessidade intensa de ser aprovado(a), admirado(a) ou reconhecido(a) para se sentir valioso(a).',
+                origem: 'Geralmente associada a ambientes em que amor e atenção eram condicionados a desempenho, aparência ou agradar os outros.',
+                resignado: 'Baseia a autoestima quase exclusivamente na opinião externa, mudando muito conforme o feedback que recebe.',
+                evitativo: 'Esconde vulnerabilidades, monta “personagens” sociais e evita situações em que possa ser mal avaliado(a).',
+                hipercompensador: 'Busca destaque, admiração, conquistas ou visibilidade, às vezes competindo e disputando atenção para garantir sensação de valor.'
+            },
+            EC: {
+                titulo: 'Direitos Elevados/Grandiosidade',
+                definicao: 'Sensação de ser especial, com direito a privilégios, regras diferentes ou tratamento preferencial.',
+                origem: 'Pode surgir em contextos de muita permissividade, idealização excessiva ou falta de limites claros, ou como defesa contra sentimentos profundos de inferioridade.',
+                resignado: 'Aceita a ideia de que merece mais do que os outros, mesmo percebendo que isso pode gerar conflitos.',
+                evitativo: 'Evita tarefas e responsabilidades consideradas “inferiores” ou pouco compatíveis com a autoimagem de importância.',
+                hipercompensador: 'Impõe vontades, ultrapassa limites, espera privilégios e pode tratar os outros como extensões de si, reforçando o sentimento de superioridade.'
+            },
+            AI: {
+                titulo: 'Autocontrole/Autodisciplina Insuficientes',
+                definicao: 'Dificuldade em tolerar frustrações, adiar gratificações e manter rotinas estáveis, com tendência a buscar alívio imediato.',
+                origem: 'Relaciona-se com falta de limites consistentes na infância, pouca estrutura ou, em alguns casos, uso de impulsividade como fuga de emoções dolorosas.',
+                resignado: 'Vê a si mesmo(a) como “sem força de vontade”, aceitando repetidos ciclos de abandono de metas e projetos.',
+                evitativo: 'Evita tarefas que exigem esforço prolongado, planejamento ou disciplina, priorizando o que dá prazer rápido.',
+                hipercompensador: 'Entra em fases de rigidez extrema, com regras duras e hiperprodutividade, tentando compensar períodos de falta de controle.'
+            },
+            NP: {
+                titulo: 'Negatividade/Pessimismo',
+                definicao: 'Foco predominante nos aspectos negativos, riscos, perdas e problemas, com dificuldade em perceber possibilidades positivas.',
+                origem: 'Comum em ambientes marcados por crises, perdas, críticas constantes, preocupação excessiva ou pouco espaço para alegria.',
+                resignado: 'Enxerga a vida como um lugar essencialmente perigoso ou frustrante, sentindo que “as coisas boas não duram”.',
+                evitativo: 'Evita investir em projetos ou relações com medo de se decepcionar, preferindo não criar expectativas.',
+                hipercompensador: 'Assume o papel de “voz da realidade dura”, apontando defeitos e riscos em tudo, o que pode proteger de frustrações, mas também roubar esperança.'
+            },
+            IE: {
+                titulo: 'Inibição Emocional',
+                definicao: 'Bloqueio frequente de emoções, espontaneidade e necessidades pessoais, para evitar críticas, vergonha ou desorganização.',
+                origem: 'Geralmente associada a ambientes em que expressar sentimentos era visto como fraqueza, exagero ou algo inadequado.',
+                resignado: 'Internaliza a ideia de que sentir e expressar emoções é perigoso ou vergonhoso, tornando-se contido(a) e controlado(a).',
+                evitativo: 'Foge de conversas profundas, muda de assunto ou se refugia no racional para não entrar em contato com o que sente.',
+                hipercompensador: 'Usa humor, ironia ou uma postura aparentemente “fria” para manter distância de experiências emocionais mais vulneráveis.'
+            },
+            PC: {
+                titulo: 'Padrões Inflexíveis/Crítica Exagerada',
+                definicao: 'Busca rígida por perfeição, alto desempenho e regras, com autocrítica intensa e pouco espaço para descanso ou erro.',
+                origem: 'Comum em famílias muito exigentes, críticas, competitivas ou centradas em produtividade e resultados.',
+                resignado: 'Sente que precisa estar sempre produzindo ou melhorando algo, com grande dificuldade para relaxar sem culpa.',
+                evitativo: 'Adia projetos por medo de não alcançar o padrão ideal, revisa em excesso detalhes e se prende em correções intermináveis.',
+                hipercompensador: 'Critica com dureza a si e os outros quando percebe falhas, impondo padrões muito altos ao ambiente ao redor.'
+            },
+            PCO: {
+                titulo: 'Punitividade',
+                definicao: 'Tendência a ver erros como merecedores de punição dura, com pouca tolerância para fragilidade humana ou compaixão.',
+                origem: 'Frequentemente associada a contextos em que falhas eram tratadas com severidade, humilhação, castigos rígidos ou pouco acolhimento.',
+                resignado: 'Aplica sobre si a mesma dureza, acreditando que só críticas fortes fazem alguém melhorar.',
+                evitativo: 'Evita situações em que possa errar ou ser avaliado, escondendo falhas para não entrar em contato com a sensação de culpa e punição.',
+                hipercompensador: 'Torna-se muito crítico(a), duro(a) ou punitivo(a) com os outros, replicando o padrão que aprendeu e tendo pouca paciência com limitações humanas.'
+            }
+        };
+
+        const questions = [
+            {
+                id: 'Q01',
+                number: 1,
+                schemaId: 'PE',
+                text: 'Costumo sentir que, nas minhas relações mais importantes, falta carinho ou acolhimento emocional.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q02',
+                number: 2,
+                schemaId: 'PE',
+                text: 'Mesmo quando estou perto de alguém, frequentemente me sinto emocionalmente sozinho(a).',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q03',
+                number: 3,
+                schemaId: 'PE',
+                text: 'Evito pedir apoio emocional porque penso que vou incomodar ou não serei compreendido(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q04',
+                number: 4,
+                schemaId: 'PE',
+                text: 'Para não sentir falta de cuidado, muitas vezes me afasto em silêncio ou finjo que está tudo bem.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q05',
+                number: 5,
+                schemaId: 'PE',
+                text: 'Às vezes ajo como se não precisasse de ninguém, para não mostrar que me sinto carente de afeto.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q06',
+                number: 6,
+                schemaId: 'PE',
+                text: 'Costumo me orgulhar de ser “forte” e autossuficiente, mesmo quando por dentro sinto carência emocional.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q07',
+                number: 7,
+                schemaId: 'AB',
+                text: 'Tenho medo constante de que as pessoas de quem mais dependo acabem se afastando de mim.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q08',
+                number: 8,
+                schemaId: 'AB',
+                text: 'Quando alguém se distancia ou demora a responder, fico inseguro(a) sobre o quanto ainda se importa comigo.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q09',
+                number: 9,
+                schemaId: 'AB',
+                text: 'Evito me apegar demais às pessoas para não sofrer se elas forem embora.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q10',
+                number: 10,
+                schemaId: 'AB',
+                text: 'Às vezes me afasto primeiro ou termino vínculos para não correr o risco de ser abandonado(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q11',
+                number: 11,
+                schemaId: 'AB',
+                text: 'Posso ficar controlador(a) ou ciumento(a) para garantir que as pessoas importantes continuem por perto.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q12',
+                number: 12,
+                schemaId: 'AB',
+                text: 'Costumo testar o quanto alguém gosta de mim, criando situações para ver se a pessoa continua comigo.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q13',
+                number: 13,
+                schemaId: 'DA',
+                text: 'É difícil acreditar que as pessoas não vão se aproveitar de mim se eu me abrir demais.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q14',
+                number: 14,
+                schemaId: 'DA',
+                text: 'Com frequência imagino que há intenções ocultas ou segundas intenções no comportamento dos outros.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q15',
+                number: 15,
+                schemaId: 'DA',
+                text: 'Evito falar de assuntos pessoais porque temo que isso seja usado contra mim no futuro.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q16',
+                number: 16,
+                schemaId: 'DA',
+                text: 'Prefiro manter distância emocional para não correr o risco de ser enganado(a) ou humilhado(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q17',
+                number: 17,
+                schemaId: 'DA',
+                text: 'Às vezes fico na defensiva ou ataco primeiro para não parecer vulnerável aos outros.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q18',
+                number: 18,
+                schemaId: 'DA',
+                text: 'Costumo testar a lealdade das pessoas, fazendo pequenas provocações ou criando conflitos.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q19',
+                number: 19,
+                schemaId: 'SI',
+                text: 'Na maior parte dos ambientes sociais, sinto que sou diferente ou não pertenço ao grupo.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q20',
+                number: 20,
+                schemaId: 'SI',
+                text: 'Geralmente acredito que os outros se encaixam melhor do que eu em festas, grupos ou equipes.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q21',
+                number: 21,
+                schemaId: 'SI',
+                text: 'Evito eventos sociais porque me sinto deslocado(a) ou estranho(a) quando estou com muitas pessoas.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q22',
+                number: 22,
+                schemaId: 'SI',
+                text: 'Costumo ficar mais à margem das conversas, apenas observando, para não correr o risco de ser rejeitado(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q23',
+                number: 23,
+                schemaId: 'SI',
+                text: 'Às vezes assumo um papel de “diferentão” ou “excêntrico” para lidar com a sensação de não pertencer.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q24',
+                number: 24,
+                schemaId: 'SI',
+                text: 'Em outros momentos tento parecer indiferente aos grupos, como se não me importasse em fazer parte de nada.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q25',
+                number: 25,
+                schemaId: 'DI',
+                text: 'Com frequência sinto que há algo profundamente errado ou defeituoso em mim.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q26',
+                number: 26,
+                schemaId: 'DI',
+                text: 'Tenho dificuldade em acreditar que alguém poderia me conhecer por inteiro e ainda assim me aceitar.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q27',
+                number: 27,
+                schemaId: 'DI',
+                text: 'Evito mostrar meus pensamentos ou sentimentos mais íntimos por vergonha de ser julgado(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q28',
+                number: 28,
+                schemaId: 'DI',
+                text: 'Costumo esconder partes da minha história ou de quem sou, para não parecer “menos” que os outros.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q29',
+                number: 29,
+                schemaId: 'DI',
+                text: 'Às vezes exagero minhas qualidades ou conquistas para compensar a sensação interna de defeito.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q30',
+                number: 30,
+                schemaId: 'DI',
+                text: 'Em alguns momentos ajo com arrogância ou superioridade para esconder o quanto me sinto inadequado(a).',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q31',
+                number: 31,
+                schemaId: 'FD',
+                text: 'Comparado(a) às outras pessoas, frequentemente me vejo como menos capaz ou competente.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q32',
+                number: 32,
+                schemaId: 'FD',
+                text: 'Costumo esperar que meus projetos não deem certo, mesmo quando me esforço.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q33',
+                number: 33,
+                schemaId: 'FD',
+                text: 'Evito desafios acadêmicos ou profissionais por medo de falhar e confirmar que sou incapaz.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q34',
+                number: 34,
+                schemaId: 'FD',
+                text: 'Às vezes deixo de tentar coisas novas porque já imagino que não vou conseguir.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q35',
+                number: 35,
+                schemaId: 'FD',
+                text: 'Em alguns momentos trabalho demais ou estudo em excesso para provar que não sou um fracasso.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q36',
+                number: 36,
+                schemaId: 'FD',
+                text: 'Costumo ser muito competitivo(a) para compensar sentimentos de inferioridade em relação aos outros.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q37',
+                number: 37,
+                schemaId: 'DIIN',
+                text: 'Muitas vezes sinto que não consigo tomar decisões importantes sem a opinião de alguém.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q38',
+                number: 38,
+                schemaId: 'DIIN',
+                text: 'Tenho a sensação de que, sozinho(a), não dou conta das responsabilidades do dia a dia.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q39',
+                number: 39,
+                schemaId: 'DIIN',
+                text: 'Evito aprender coisas novas porque acho que vou depender de alguém para resolver por mim.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q40',
+                number: 40,
+                schemaId: 'DIIN',
+                text: 'Costumo adiar decisões esperando que outra pessoa escolha no meu lugar.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q41',
+                number: 41,
+                schemaId: 'DIIN',
+                text: 'Em alguns momentos ajo como muito autoconfiante para que ninguém perceba o quanto me sinto inseguro(a).',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q42',
+                number: 42,
+                schemaId: 'DIIN',
+                text: 'Às vezes assumo o controle de tudo, sem pedir ajuda, para evitar qualquer sensação de dependência.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q43',
+                number: 43,
+                schemaId: 'VV',
+                text: 'Frequentemente temo que algo ruim ou inesperado aconteça comigo ou com quem amo.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q44',
+                number: 44,
+                schemaId: 'VV',
+                text: 'Pequenos sintomas físicos costumam me deixar muito preocupado(a) com doenças graves.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q45',
+                number: 45,
+                schemaId: 'VV',
+                text: 'Evito alguns lugares, trajetos ou atividades por medo de acidentes ou catástrofes.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q46',
+                number: 46,
+                schemaId: 'VV',
+                text: 'Fujo de notícias ou conversas que aumentem minha sensação de ameaça ou perigo.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q47',
+                number: 47,
+                schemaId: 'VV',
+                text: 'Às vezes pesquiso compulsivamente sobre doenças, notícias ou perigos para sentir que estou no controle.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q48',
+                number: 48,
+                schemaId: 'VV',
+                text: 'Costumo orientar ou criticar os outros por achá-los “relaxados” com riscos que levo muito a sério.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q49',
+                number: 49,
+                schemaId: 'EM',
+                text: 'Muitas vezes sinto que minha identidade se mistura demais com a de alguém importante para mim.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q50',
+                number: 50,
+                schemaId: 'EM',
+                text: 'Tenho dificuldade em saber o que eu realmente quero, separado do que os outros esperam.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q51',
+                number: 51,
+                schemaId: 'EM',
+                text: 'Evito tomar decisões que possam desagradar pessoas próximas, mesmo que isso me faça mal.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q52',
+                number: 52,
+                schemaId: 'EM',
+                text: 'Às vezes deixo meus planos de lado para não criar distância ou conflito com alguém que amo.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q53',
+                number: 53,
+                schemaId: 'EM',
+                text: 'Em alguns momentos tomo decisões bruscas de afastamento para provar que sou independente.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q54',
+                number: 54,
+                schemaId: 'EM',
+                text: 'Às vezes ajo de forma excessivamente autônoma, recusando ajuda para não parecer dependente.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q55',
+                number: 55,
+                schemaId: 'SB',
+                text: 'Frequentemente cedo às vontades dos outros com medo de que fiquem bravos ou me rejeitem.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q56',
+                number: 56,
+                schemaId: 'SB',
+                text: 'Sinto que não tenho tanto direito quanto os outros de dizer “não”.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q57',
+                number: 57,
+                schemaId: 'SB',
+                text: 'Evito expressar opiniões diferentes para não gerar conflito ou discussão.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q58',
+                number: 58,
+                schemaId: 'SB',
+                text: 'Costumo engolir minha raiva para manter a paz, mesmo quando me sinto injustiçado(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q59',
+                number: 59,
+                schemaId: 'SB',
+                text: 'Em alguns momentos explodo de forma intensa depois de muito tempo calado(a).',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q60',
+                number: 60,
+                schemaId: 'SB',
+                text: 'Às vezes assumo um tom autoritário para compensar períodos em que me senti muito submisso(a).',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q61',
+                number: 61,
+                schemaId: 'SA',
+                text: 'Com frequência coloco as necessidades dos outros à frente das minhas, mesmo ficando esgotado(a).',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q62',
+                number: 62,
+                schemaId: 'SA',
+                text: 'Sinto culpa quando penso em cuidar de mim mesmo(a) antes de ajudar alguém.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q63',
+                number: 63,
+                schemaId: 'SA',
+                text: 'Evito pedir ajuda porque acredito que os outros precisam mais do que eu.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q64',
+                number: 64,
+                schemaId: 'SA',
+                text: 'Costumo esconder meu cansaço para não desapontar quem conta comigo.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q65',
+                number: 65,
+                schemaId: 'SA',
+                text: 'Às vezes ajudo demais e depois fico ressentido(a), achando que ninguém faz por mim o mesmo esforço.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q66',
+                number: 66,
+                schemaId: 'SA',
+                text: 'Em alguns momentos faço questão de mostrar o quanto me sacrifico para que os outros reconheçam meu valor.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q67',
+                number: 67,
+                schemaId: 'AP',
+                text: 'Minha autoestima costuma depender muito do que os outros pensam de mim.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q68',
+                number: 68,
+                schemaId: 'AP',
+                text: 'Tenho grande necessidade de ser bem visto(a) para me sentir valioso(a).',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q69',
+                number: 69,
+                schemaId: 'AP',
+                text: 'Evito mostrar fraquezas ou erros para não correr o risco de ser mal avaliado(a).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q70',
+                number: 70,
+                schemaId: 'AP',
+                text: 'Às vezes visto um “personagem” diferente de quem realmente sou, para agradar cada grupo.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q71',
+                number: 71,
+                schemaId: 'AP',
+                text: 'Em alguns momentos exagero em conquistas, aparência ou desempenho para ser admirado(a).',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q72',
+                number: 72,
+                schemaId: 'AP',
+                text: 'Costumo disputar espaço ou reconhecimento quando sinto que não estou recebendo atenção suficiente.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q73',
+                number: 73,
+                schemaId: 'EC',
+                text: 'Muitas vezes sinto que mereço algumas exceções às regras que valem para os outros.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q74',
+                number: 74,
+                schemaId: 'EC',
+                text: 'Costumo achar que minhas necessidades deveriam ser atendidas antes das demais.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q75',
+                number: 75,
+                schemaId: 'EC',
+                text: 'Evito tarefas que considero pequenas demais para mim, esperando que outra pessoa faça.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q76',
+                number: 76,
+                schemaId: 'EC',
+                text: 'Às vezes me afasto de ambientes em que não sou tratado(a) com o destaque que considero merecer.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q77',
+                number: 77,
+                schemaId: 'EC',
+                text: 'Em certos momentos ultrapasso limites ou imponho minhas vontades, como se soubesse o que é melhor para todos.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q78',
+                number: 78,
+                schemaId: 'EC',
+                text: 'Costumo tratar os outros como se eles devessem se adaptar ao meu ritmo ou preferências.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q79',
+                number: 79,
+                schemaId: 'AI',
+                text: 'Tenho dificuldade em manter disciplina em tarefas que exigem esforço contínuo.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q80',
+                number: 80,
+                schemaId: 'AI',
+                text: 'Com frequência busco gratificação imediata, mesmo sabendo que isso pode me prejudicar depois.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q81',
+                number: 81,
+                schemaId: 'AI',
+                text: 'Evito atividades que exigem organização e planejamento porque me sobrecarregam rapidamente.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q82',
+                number: 82,
+                schemaId: 'AI',
+                text: 'Frequentemente abandono projetos quando exigem muita constância, preferindo algo mais prazeroso no momento.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q83',
+                number: 83,
+                schemaId: 'AI',
+                text: 'Em alguns períodos entro em fases de produtividade intensa para compensar momentos de descontrole.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q84',
+                number: 84,
+                schemaId: 'AI',
+                text: 'Às vezes imponho regras muito rígidas para mim ou para outras pessoas depois de perceber que exagerei em impulsos.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q85',
+                number: 85,
+                schemaId: 'NP',
+                text: 'Costumo imaginar primeiro o que pode dar errado antes de enxergar o que pode dar certo.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q86',
+                number: 86,
+                schemaId: 'NP',
+                text: 'Mesmo quando as coisas estão indo bem, frequentemente espero que algo ruim aconteça.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q87',
+                number: 87,
+                schemaId: 'NP',
+                text: 'Evito me envolver em projetos que envolvam algum risco por medo de frustrações.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q88',
+                number: 88,
+                schemaId: 'NP',
+                text: 'Às vezes deixo de aproveitar boas oportunidades por focar apenas nos possíveis problemas.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q89',
+                number: 89,
+                schemaId: 'NP',
+                text: 'Em alguns momentos aponto defeitos ou riscos em quase tudo, como forma de “me proteger” de decepções.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q90',
+                number: 90,
+                schemaId: 'NP',
+                text: 'Costumo ser visto(a) como alguém muito preocupado(a) ou “realista demais” sobre o que pode dar errado.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q91',
+                number: 91,
+                schemaId: 'IE',
+                text: 'Tenho dificuldade em expressar emoções com naturalidade, mesmo perto de pessoas de confiança.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q92',
+                number: 92,
+                schemaId: 'IE',
+                text: 'Costumo segurar o choro, a raiva ou a alegria para não parecer exagerado(a).',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q93',
+                number: 93,
+                schemaId: 'IE',
+                text: 'Evito falar sobre sentimentos em conversas importantes, preferindo ficar no lado racional.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q94',
+                number: 94,
+                schemaId: 'IE',
+                text: 'Às vezes mudo de assunto quando alguém tenta aprofundar uma conversa emocional comigo.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q95',
+                number: 95,
+                schemaId: 'IE',
+                text: 'Em alguns momentos uso humor, ironias ou piadas em excesso para não mostrar o que realmente estou sentindo.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q96',
+                number: 96,
+                schemaId: 'IE',
+                text: 'Às vezes pareço frio(a) ou distante por fora, mesmo sentindo muitas coisas por dentro.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q97',
+                number: 97,
+                schemaId: 'PC',
+                text: 'Costumo me cobrar demais para fazer tudo com perfeição.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q98',
+                number: 98,
+                schemaId: 'PC',
+                text: 'É difícil relaxar quando sinto que ainda há algo a ser melhorado ou organizado.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q99',
+                number: 99,
+                schemaId: 'PC',
+                text: 'Evito iniciar alguns projetos porque temo não conseguir fazê-los no nível que considero ideal.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q100',
+                number: 100,
+                schemaId: 'PC',
+                text: 'Demoro demais para concluir tarefas por ficar revisando detalhes e correções.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q101',
+                number: 101,
+                schemaId: 'PC',
+                text: 'Em alguns momentos sou excessivamente crítico(a) comigo ou com os outros quando percebo erros.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q102',
+                number: 102,
+                schemaId: 'PC',
+                text: 'Às vezes imponho padrões muito rígidos às pessoas ao meu redor, esperando que façam tudo “do jeito certo”.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q103',
+                number: 103,
+                schemaId: 'PCO',
+                text: 'Tenho pouca tolerância com falhas, tanto minhas quanto das outras pessoas.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q104',
+                number: 104,
+                schemaId: 'PCO',
+                text: 'Quando erro, sinto que mereço críticas duras ou algum tipo de punição.',
+                styleHint: 'R'
+            },
+            {
+                id: 'Q105',
+                number: 105,
+                schemaId: 'PCO',
+                text: 'Evito falar sobre meus erros ou fragilidades para não ter que lidar com críticas (inclusive as minhas).',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q106',
+                number: 106,
+                schemaId: 'PCO',
+                text: 'Fujo de situações em que posso errar para não me sentir “fracassado(a)” ou “errado(a)”.',
+                styleHint: 'E'
+            },
+            {
+                id: 'Q107',
+                number: 107,
+                schemaId: 'PCO',
+                text: 'Às vezes sou duro(a) ao julgar quem erra, como se apenas punição fizesse alguém aprender.',
+                styleHint: 'H'
+            },
+            {
+                id: 'Q108',
+                number: 108,
+                schemaId: 'PCO',
+                text: 'Em alguns momentos me pego usando frases cruéis comigo mesmo(a) quando falho, sem permitir compaixão.',
+                styleHint: 'H'
+            }
+        ];
+
+        questions.forEach(q => {
+            if (!q.group) {
+                q.group = Math.ceil(q.number / 10);
+            }
+        });
+
+        const LIKERT_MIN = 1;
+        const LIKERT_MAX = 6;
+
+        const totalQuestions = questions.length;
+        const groups = Array.from(
+            new Set(
+                questions.map(q => q.group || 1)
+            )
+        ).sort((a, b) => a - b);
+
+        const totalBlocks = groups.length || 1;
+
+        const questionsContainer = document.getElementById('questionsContainer');
+        const progressInner = document.getElementById('progressInner');
+        const progressText = document.getElementById('progressText');
+        const blockTag = document.getElementById('blockTag');
+        const prevBlockBtn = document.getElementById('prevBlock');
+        const nextBlockBtn = document.getElementById('nextBlock');
+        const reviewSummary = document.getElementById('reviewSummary');
+        const missingList = document.getElementById('missingList');
+        const calculateResultsBtn = document.getElementById('calculateResults');
+        const resultsIntro = document.getElementById('resultsIntro');
+        const resultsTableWrapper = document.getElementById('resultsTableWrapper');
+        const downloadPdfReportBtn = document.getElementById('downloadPdfReport');
+        const perSchemaPsychoDiv = document.getElementById('perSchemaPsycho');
+
+        let currentBlockIndex = 0;
+        let responses = {};
+
+        function getBlockQuestions(blockIndex) {
+            const groupId = groups[blockIndex] ?? groups[0] ?? 1;
+            return questions.filter(q => (q.group || 1) === groupId);
+        }
+
+        function updateProgressText(answeredCount, startItem, endItem) {
+            const progressPercent = totalQuestions ?
+                Math.round((answeredCount / totalQuestions) * 100) :
+                0;
+
+            progressInner.style.width = progressPercent + '%';
+            progressText.textContent =
+                `Itens respondidos: ${answeredCount} de ${totalQuestions} (${progressPercent}%)` +
+                (startItem && endItem ? ` | Itens ${startItem} a ${endItem}` : '');
+        }
+
+        function renderCurrentBlock() {
+            questionsContainer.innerHTML = '';
+
+            const blockQuestions = getBlockQuestions(currentBlockIndex);
+            const numbers = blockQuestions.map(q => q.number);
+            const start = numbers.length ? Math.min(...numbers) : 0;
+            const end = numbers.length ? Math.max(...numbers) : 0;
+
+            blockTag.textContent = `Bloco ${currentBlockIndex + 1} de ${totalBlocks}`;
+
+            const answeredCount = Object.keys(responses).length;
+            updateProgressText(answeredCount, start, end);
+
+            blockQuestions.forEach(q => {
+                const block = document.createElement('div');
+                block.className = 'question-block';
+
+                const header = document.createElement('div');
+                header.className = 'question-header';
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'question-text';
+                textDiv.textContent = `${q.number}. ${q.text}`;
+
+                header.appendChild(textDiv);
+                block.appendChild(header);
+
+                const likertRow = document.createElement('div');
+                likertRow.className = 'likert-row';
+
+                for (let v = LIKERT_MIN; v <= LIKERT_MAX; v++) {
+                    const opt = document.createElement('label');
+                    opt.className = 'likert-option';
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = q.id;
+                    input.value = v;
+                    if (responses[q.id] === v) {
+                        input.checked = true;
+                    }
+
+                    input.addEventListener('change', () => {
+                        responses[q.id] = v;
+                        const answered = Object.keys(responses).length;
+                        updateProgressText(answered, start, end);
+                        block.classList.remove('missing');
+                        const err = block.querySelector('.error-msg');
+                        if (err) err.remove();
+                    });
+
+                    const span = document.createElement('span');
+                    span.textContent = v;
+
+                    opt.appendChild(input);
+                    opt.appendChild(span);
+                    likertRow.appendChild(opt);
+                }
+
+                block.appendChild(likertRow);
+                questionsContainer.appendChild(block);
+            });
+
+            if (prevBlockBtn) {
+                prevBlockBtn.disabled = currentBlockIndex === 0;
+            }
+
+            if (nextBlockBtn) {
+                nextBlockBtn.textContent =
+                    currentBlockIndex === totalBlocks - 1 ?
+                    'Ir para revisão' :
+                    'Próximo bloco';
+            }
+
+            scrollToQuestionnaire();
+        }
+
+        function validateCurrentBlock() {
+            const blockQuestions = getBlockQuestions(currentBlockIndex);
+            const blocks = questionsContainer.querySelectorAll('.question-block');
+            let firstInvalid = null;
+
+            blockQuestions.forEach((q, idx) => {
+                const blockEl = blocks[idx];
+                const hasResponse = responses[q.id] != null;
+                if (!hasResponse) {
+                    blockEl.classList.add('missing');
+                    let err = blockEl.querySelector('.error-msg');
+                    if (!err) {
+                        err = document.createElement('div');
+                        err.className = 'error-msg';
+                        err.textContent = 'Responda este item antes de continuar.';
+                        blockEl.appendChild(err);
+                    }
+                    if (!firstInvalid) firstInvalid = blockEl;
+                } else {
+                    blockEl.classList.remove('missing');
+                    const err = blockEl.querySelector('.error-msg');
+                    if (err) err.remove();
+                }
+            });
+
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return false;
+            }
+            return true;
+        }
+
+        if (goQuestionnaire) {
+            goQuestionnaire.addEventListener('click', () => {
+                userdataSection.classList.add('hidden');
+                questionnaireSection.classList.remove('hidden');
+                if (totalQuestions > 0) {
+                    renderCurrentBlock();
+                } else {
+                    scrollToQuestionnaire();
+                }
+            });
+        }
+
+        if (prevBlockBtn) {
+            prevBlockBtn.addEventListener('click', () => {
+                if (currentBlockIndex > 0) {
+                    currentBlockIndex--;
+                    renderCurrentBlock();
+                }
+            });
+        }
+
+        if (nextBlockBtn) {
+            nextBlockBtn.addEventListener('click', () => {
+                if (!validateCurrentBlock()) return;
+
+                if (currentBlockIndex < totalBlocks - 1) {
+                    currentBlockIndex++;
+                    renderCurrentBlock();
+                } else {
+                    questionnaireSection.classList.add('hidden');
+                    reviewSection.classList.remove('hidden');
+                    updateReviewSummary();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        function updateReviewSummary() {
+            const answered = Object.keys(responses).length;
+            const missing = totalQuestions - answered;
+            reviewSummary.textContent = `Você respondeu ${answered} de ${totalQuestions} itens.`;
+
+            if (missing > 0) {
+                const missingNumbers = questions
+                    .filter(q => !responses[q.id])
+                    .map(q => q.number)
+                    .sort((a, b) => a - b);
+                missingList.innerHTML =
+                    `<strong>Itens não respondidos:</strong> ${missingNumbers.join(', ')}. ` +
+                    `Se possível, volte e complete todos para uma leitura mais precisa.`;
+            } else {
+                missingList.textContent =
+                    'Todos os itens estão respondidos. Você pode gerar seus resultados com segurança.';
+            }
+        }
+
+        if (calculateResultsBtn) {
+            calculateResultsBtn.addEventListener('click', () => {
+                const missing = questions.filter(q => !responses[q.id]);
+                if (missing.length > 0) {
+                    alert('Ainda há itens sem resposta. Idealmente, complete todos antes de gerar os resultados.');
+                }
+                reviewSection.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+                actionsSection.classList.remove('hidden');
+
+                const resultObj = calculateSchemaScores();
+                renderResults(resultObj);
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        function calculateSchemaScores() {
+            const schemaScores = {};
+            schemas.forEach(s => {
+                schemaScores[s.id] = {
+                    schema: s,
+                    sum: 0,
+                    count: 0,
+                    mean: 0,
+                    status: 'ausente',
+                    styleScores: {
+                        resignado: 0,
+                        evitativo: 0,
+                        hipercompensador: 0
+                    },
+                    styleLabel: 'Não definido',
+                    interpretacao: ''
+                };
+            });
+
+            questions.forEach(q => {
+                const val = responses[q.id];
+                if (val != null && schemaScores[q.schemaId]) {
+                    const entry = schemaScores[q.schemaId];
+                    entry.sum += val;
+                    entry.count += 1;
+
+                    if (q.styleHint === 'R') entry.styleScores.resignado += val;
+                    if (q.styleHint === 'E') entry.styleScores.evitativo += val;
+                    if (q.styleHint === 'H') entry.styleScores.hipercompensador += val;
+                }
+            });
+
+            Object.keys(schemaScores).forEach(schemaId => {
+                const entry = schemaScores[schemaId];
+
+                entry.mean = entry.count > 0 ? entry.sum / entry.count : 0;
+
+                if (entry.mean >= 4.0) {
+                    entry.status = 'ativo';
+                } else if (entry.mean >= 2.5) {
+                    entry.status = 'latente';
+                } else {
+                    entry.status = 'ausente';
+                }
+
+                const ss = entry.styleScores;
+                const order = ['resignado', 'evitativo', 'hipercompensador'];
+                let topKey = order[0];
+                let topVal = ss[topKey];
+
+                order.forEach(key => {
+                    if (ss[key] > topVal) {
+                        topKey = key;
+                        topVal = ss[key];
+                    }
+                });
+
+                if (topVal === 0) {
+                    entry.styleLabel = 'Não definido';
+                } else {
+                    if (topKey === 'resignado') entry.styleLabel = 'Resignado(a)';
+                    if (topKey === 'evitativo') entry.styleLabel = 'Evitativo(a)';
+                    if (topKey === 'hipercompensador') entry.styleLabel = 'Hipercompensador(a)';
+                }
+
+                if (entry.status === 'ativo') {
+                    entry.interpretacao =
+                        `Há indícios de que o esquema de ${entry.schema.nome} esteja impactando sua vida atual de forma significativa. ` +
+                        `O estilo de enfrentamento predominante estimado é: ${entry.styleLabel}.`;
+                } else if (entry.status === 'latente') {
+                    entry.interpretacao =
+                        `O esquema de ${entry.schema.nome} aparece como uma vulnerabilidade em segundo plano, ` +
+                        `que tende a ser ativada em contextos específicos. Estilo de enfrentamento predominante: ${entry.styleLabel}.`;
+                } else {
+                    entry.interpretacao =
+                        `Neste momento, o esquema de ${entry.schema.nome} não parece contribuir de forma relevante para o sofrimento atual.`;
+                }
+            });
+
+            return schemaScores;
+        }
+
+        function getChartColors() {
+            const isDark = document.body.classList.contains('theme-dark');
+            return {
+                tick: isDark ? '#f5f5f7' : '#222222',
+                grid: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'
+            };
+        }
+
+        function applyChartTheme(chart) {
+            const c = getChartColors();
+            if (chart.options.scales && chart.options.scales.x && chart.options.scales.y) {
+                chart.options.scales.x.ticks.color = c.tick;
+                chart.options.scales.y.ticks.color = c.tick;
+                chart.options.scales.x.grid.color = c.grid;
+                chart.options.scales.y.grid.color = c.grid;
+            }
+            if (chart.options.plugins && chart.options.plugins.legend) {
+                chart.options.plugins.legend.labels.color = c.tick;
+            }
+        }
+
+        window.schemasChartInstance = null;
+
+        function renderResults(schemaScores) {
+            const nome = nomeInput?.value?.trim() || 'Paciente';
+            resultsIntro.textContent =
+                `${nome}, abaixo você encontra um panorama dos esquemas avaliados. ` +
+                `Use estas informações como ponto de partida para conversar com seu psicólogo(a) sobre o que mais faz sentido para a sua história.`;
+
+            let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Esquema</th>
+              <th>Domínio</th>
+              <th>Escore médio</th>
+              <th>Status</th>
+              <th>Estilo de enfrentamento predominante</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+            Object.keys(schemaScores).forEach(schemaId => {
+                const entry = schemaScores[schemaId];
+                const mean = entry.count > 0 ? entry.mean.toFixed(2) : '-';
+                let statusClass = 'status-ausente';
+                let statusLabel = 'Ausente';
+
+                if (entry.status === 'ativo') {
+                    statusClass = 'status-ativo';
+                    statusLabel = 'Ativo';
+                } else if (entry.status === 'latente') {
+                    statusClass = 'status-latente';
+                    statusLabel = 'Latente';
+                }
+
+                html += `
+          <tr>
+            <td>${entry.schema.nome}</td>
+            <td>${entry.schema.dominio}</td>
+            <td>${mean}</td>
+            <td><span class="status-chip ${statusClass}">${statusLabel}</span></td>
+            <td>${entry.styleLabel}</td>
+          </tr>
+        `;
+            });
+
+            html += `</tbody></table>`;
+            resultsTableWrapper.innerHTML = html;
+
+            const labels = [];
+            const dataMeans = [];
+            const bgColors = [];
+            const borderColors = [];
+
+            Object.keys(schemaScores).forEach(schemaId => {
+                const entry = schemaScores[schemaId];
+                labels.push(entry.schema.nome);
+                dataMeans.push(entry.mean);
+
+                if (entry.status === 'ativo') {
+                    bgColors.push('rgba(220,38,38,0.85)');
+                    borderColors.push('rgba(185,28,28,1)');
+                } else if (entry.status === 'latente') {
+                    bgColors.push('rgba(234,179,8,0.85)');
+                    borderColors.push('rgba(202,138,4,1)');
+                } else {
+                    bgColors.push('rgba(22,163,74,0.85)');
+                    borderColors.push('rgba(21,128,61,1)');
+                }
+            });
+
+            const ctx = document.getElementById('schemasChart').getContext('2d');
+            if (window.schemasChartInstance) {
+                window.schemasChartInstance.destroy();
+            }
+
+            const colors = getChartColors();
+
+            window.schemasChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Média de resposta (1 a 6)',
+                        data: dataMeans,
+                        borderWidth: 1,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        maxBarThickness: 26
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 6,
+                            ticks: {
+                                color: colors.tick
+                            },
+                            grid: {
+                                color: colors.grid
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: colors.tick
+                            },
+                            grid: {
+                                color: colors.grid
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: colors.tick
+                            }
+                        }
+                    }
+                }
+            });
+
+            applyChartTheme(window.schemasChartInstance);
+            window._mapaEsquemasResults = schemaScores;
+
+            if (perSchemaPsychoDiv) {
+                const ativos = Object.values(schemaScores).filter(e => e.status === 'ativo');
+                if (ativos.length === 0) {
+                    perSchemaPsychoDiv.innerHTML =
+                        '<p class="muted">Nenhum esquema apareceu claramente ativo. Ainda assim, os esquemas latentes e o padrão geral de respostas podem ser úteis para reflexão em psicoterapia.</p>';
+                } else {
+                    let peHtml = '';
+                    ativos.forEach(entry => {
+                        const info = schemaPsycho[entry.schema.id];
+                        if (!info) return;
+                        peHtml += `
+              <div class="schema-card">
+                <p><strong>${info.titulo}</strong></p>
+                <p>${info.definicao}</p>
+                <p>${info.origem}</p>
+                <p><strong>Quando você reage de forma resignada:</strong> ${info.resignado}</p>
+                <p><strong>Quando reage de forma evitativa:</strong> ${info.evitativo}</p>
+                <p><strong>Quando reage de forma hipercompensadora:</strong> ${info.hipercompensador}</p>
+              </div>
+            `;
+                    });
+                    perSchemaPsychoDiv.innerHTML = peHtml;
+                }
+            }
+        }
+
+
+        const PDF_THEME = {
+            blue: '#0F2A3D',
+            text: '#222222',
+            muted: '#666666',
+            lightBlue: '#EEF6FA',
+            tableHead: '#F3F5F7',
+            line: '#D7DEE5',
+            active: '#B91C1C',
+            latent: '#A16207',
+            absent: '#166534',
+            white: '#FFFFFF'
+        };
+
+        const PDF_LAYOUT = {
+            pageWidth: 210,
+            pageHeight: 297,
+            marginTop: 20,
+            marginBottom: 18,
+            marginLeft: 22,
+            marginRight: 22,
+            contentWidth: 166,
+            contentBottom: 268,
+            footerLineY: 277,
+            footerY: 282,
+            firstHeaderBottom: 45,
+            compactHeaderBottom: 32
+        };
+
+        function hexToRgb(hex) {
+            const clean = String(hex || '').replace('#', '').trim();
+            const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+            const value = parseInt(full, 16);
+            return {
+                r: (value >> 16) & 255,
+                g: (value >> 8) & 255,
+                b: value & 255
+            };
+        }
+
+        function setTextColorHex(doc, hex) {
+            const c = hexToRgb(hex);
+            doc.setTextColor(c.r, c.g, c.b);
+        }
+
+        function setDrawColorHex(doc, hex) {
+            const c = hexToRgb(hex);
+            doc.setDrawColor(c.r, c.g, c.b);
+        }
+
+        function setFillColorHex(doc, hex) {
+            const c = hexToRgb(hex);
+            doc.setFillColor(c.r, c.g, c.b);
+        }
+
+        function formatDateBR(dateString) {
+            if (!dateString) {
+                const d = new Date();
+                return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+            }
+
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                const [year, month, day] = dateString.split('-');
+                return `${day}/${month}/${year}`;
+            }
+
+            const d = new Date(dateString);
+            if (Number.isNaN(d.getTime())) return dateString;
+
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        function formatDateLongBR(dateString) {
+            const months = [
+                'janeiro',
+                'fevereiro',
+                'março',
+                'abril',
+                'maio',
+                'junho',
+                'julho',
+                'agosto',
+                'setembro',
+                'outubro',
+                'novembro',
+                'dezembro'
+            ];
+
+            let d;
+            if (dateString && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+                const [year, month, day] = dateString.split('-').map(Number);
+                d = new Date(year, month - 1, day);
+            } else if (dateString) {
+                d = new Date(dateString);
+            } else {
+                d = new Date();
+            }
+
+            if (Number.isNaN(d.getTime())) d = new Date();
+
+            return `${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
+        }
+
+        function getIsoDateSafe(dateString) {
+            if (dateString && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function sanitizeFileName(value) {
+            const base = String(value || 'Paciente')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9\s_-]/g, '')
+                .trim()
+                .replace(/\s+/g, '_');
+
+            return base || 'Paciente';
+        }
+
+        function getOrderedResults(results) {
+            return Object.values(results || {}).sort((a, b) => {
+                const indexA = schemas.findIndex(s => s.id === a.schema.id);
+                const indexB = schemas.findIndex(s => s.id === b.schema.id);
+                return indexA - indexB;
+            });
+        }
+
+        function getActiveSchemas(results) {
+            return getOrderedResults(results)
+                .filter(entry => entry.status === 'ativo')
+                .sort((a, b) => b.mean - a.mean);
+        }
+
+        function getLatentSchemas(results) {
+            return getOrderedResults(results)
+                .filter(entry => entry.status === 'latente')
+                .sort((a, b) => b.mean - a.mean);
+        }
+
+        function getStatusLabel(status) {
+            if (status === 'ativo') return 'Ativo';
+            if (status === 'latente') return 'Latente';
+            return 'Ausente';
+        }
+
+        function getStyleKeyFromLabel(label) {
+            const normalized = String(label || '').toLowerCase();
+            if (normalized.includes('resignado')) return 'resignado';
+            if (normalized.includes('evitativo')) return 'evitativo';
+            if (normalized.includes('hipercompensador')) return 'hipercompensador';
+            return 'geral';
+        }
+
+        function getStatusColor(status) {
+            if (status === 'ativo') return PDF_THEME.active;
+            if (status === 'latente') return PDF_THEME.latent;
+            return PDF_THEME.absent;
+        }
+
+        function countActiveStyles(activeEntries) {
+            const counts = {
+                'Resignado(a)': 0,
+                'Evitativo(a)': 0,
+                'Hipercompensador(a)': 0,
+                'Não definido': 0
+            };
+
+            activeEntries.forEach(entry => {
+                if (counts[entry.styleLabel] == null) {
+                    counts[entry.styleLabel] = 0;
+                }
+                counts[entry.styleLabel] += 1;
+            });
+
+            const ordered = Object.entries(counts)
+                .filter(([, value]) => value > 0)
+                .sort((a, b) => b[1] - a[1]);
+
+            if (ordered.length === 0) return 'não houve estilo predominante entre esquemas ativos, pois nenhum esquema apareceu claramente ativo';
+
+            return ordered.map(([label, value]) => `${label}: ${value}`).join('; ');
+        }
+
+        function getFocusedPsychoeducation(entry) {
+            const info = schemaPsycho[entry.schema.id];
+            if (!info) {
+                return 'Os resultados sugerem que este padrão pode ser explorado em psicoterapia com atenção aos gatilhos, emoções, pensamentos e respostas comportamentais associadas.';
+            }
+
+            const styleKey = getStyleKeyFromLabel(entry.styleLabel);
+            const schemaName = info.titulo;
+
+            if (styleKey === 'resignado') {
+                return `No esquema ${schemaName}, o estilo resignado pode indicar tendência a aceitar o padrão como se ele fosse uma verdade natural sobre si, sobre os outros ou sobre as relações. Neste caso, observa-se: ${info.resignado} O custo emocional possível é a manutenção de vínculos, escolhas ou rotinas que confirmam a história dolorosa. Em psicoterapia, pode ser útil investigar em quais situações a pessoa se adapta automaticamente, quais necessidades são silenciadas e quais respostas mais protetivas poderiam ser construídas com segurança.`;
+            }
+
+            if (styleKey === 'evitativo') {
+                return `No esquema ${schemaName}, o estilo evitativo pode indicar tendência a reduzir o contato com situações, emoções, conversas ou vínculos que ativam desconforto. Neste caso, observa-se: ${info.evitativo} O alívio costuma aparecer no curto prazo, mas o padrão pode permanecer pouco elaborado no longo prazo. Em psicoterapia, pode ser útil mapear o que é evitado, qual emoção aparece antes da fuga e quais aproximações graduais seriam possíveis sem exposição excessiva.`;
+            }
+
+            if (styleKey === 'hipercompensador') {
+                return `No esquema ${schemaName}, o estilo hipercompensador pode indicar tentativa de enfrentar a dor emocional indo para o extremo oposto do esquema. Neste caso, observa-se: ${info.hipercompensador} Essa resposta pode trazer sensação temporária de força ou controle, mas também pode gerar rigidez, conflitos e exaustão. Em psicoterapia, pode ser útil diferenciar proteção saudável de reação excessiva, observando quando a postura defensiva se torna mais intensa do que a situação atual exige.`;
+            }
+
+            return `No esquema ${schemaName}, os dados sugerem um padrão emocional que merece investigação clínica. ${info.definicao} Em psicoterapia, pode ser útil compreender os gatilhos atuais, a história de formação do esquema, os modos de enfrentamento e as respostas alternativas possíveis.`;
+        }
+
+        function buildPdfData() {
+            let results = window._mapaEsquemasResults || null;
+
+            if (!results || !Object.keys(results).length) {
+                const answered = Object.keys(responses).length;
+                if (answered > 0) {
+                    results = calculateSchemaScores();
+                    window._mapaEsquemasResults = results;
+                }
+            }
+
+            if (!results || !Object.keys(results).length) {
+                return null;
+            }
+
+            const name = nomeInput?.value?.trim() || 'Não informado';
+            const age = idadeInput?.value?.trim() || 'Não informada';
+            const applicationDate = dataInput?.value?.trim() || getIsoDateSafe();
+
+            return {
+                name,
+                age,
+                applicationDate,
+                dateBR: formatDateBR(applicationDate),
+                dateLong: formatDateLongBR(applicationDate),
+                cityDate: `Lagoa Santa – MG, ${formatDateLongBR(applicationDate)}`,
+                results,
+                ordered: getOrderedResults(results),
+                active: getActiveSchemas(results),
+                latent: getLatentSchemas(results)
+            };
+        }
+
+        function addPdfHeader(doc, pageNumber) {
+            const left = PDF_LAYOUT.marginLeft;
+            const right = PDF_LAYOUT.pageWidth - PDF_LAYOUT.marginRight;
+
+            setTextColorHex(doc, PDF_THEME.blue);
+            doc.setFont('helvetica', 'bold');
+
+            if (pageNumber === 1) {
+                doc.setFontSize(14);
+                doc.text('Richelmy Murta∴ Pinto', left, 18);
+
+                setTextColorHex(doc, PDF_THEME.text);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9.5);
+                doc.text('Psicólogo Clínico | CRP 04/54.383', left, 24);
+
+                doc.setFontSize(9);
+                doc.text('Especialista em Terapia Cognitivo-Comportamental e Terapia do Esquema', left, 29);
+
+                doc.setFontSize(8.5);
+                setTextColorHex(doc, PDF_THEME.muted);
+                doc.text('Atendimento psicológico online | Lagoa Santa – MG', left, 34);
+
+                setDrawColorHex(doc, PDF_THEME.line);
+                doc.setLineWidth(0.25);
+                doc.line(left, 39, right, 39);
+
+                return PDF_LAYOUT.firstHeaderBottom;
+            }
+
+            doc.setFontSize(9);
+            doc.text('Richelmy Murta∴ Pinto', left, 17);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Mapa de Esquemas – Relatório psicoeducativo de rastreio clínico', left, 23);
+
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.2);
+            doc.line(left, 27, right, 27);
+
+            return PDF_LAYOUT.compactHeaderBottom;
+        }
+
+        function addPdfFooter(doc, pageNumber, totalPages) {
+            const left = PDF_LAYOUT.marginLeft;
+            const right = PDF_LAYOUT.pageWidth - PDF_LAYOUT.marginRight;
+            const center = PDF_LAYOUT.pageWidth / 2;
+
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.2);
+            doc.line(left, PDF_LAYOUT.footerLineY, right, PDF_LAYOUT.footerLineY);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Richelmy Murta∴ Pinto – Psicólogo Clínico – CRP 04/54.383', center, PDF_LAYOUT.footerY, {
+                align: 'center'
+            });
+            doc.text('Atendimento psicológico online | Lagoa Santa – MG', center, PDF_LAYOUT.footerY + 4, {
+                align: 'center'
+            });
+            doc.text('WhatsApp: (35) 98464-0729 | ricmurtapsicologia@gmail.com | @ricmurtapsicologia', center, PDF_LAYOUT.footerY + 8, {
+                align: 'center'
+            });
+            doc.text(`Página ${pageNumber} de ${totalPages}`, right, PDF_LAYOUT.footerY + 8, {
+                align: 'right'
+            });
+        }
+
+        function checkPageBreak(doc, y, neededSpace) {
+            if (y + neededSpace <= PDF_LAYOUT.contentBottom) {
+                return y;
+            }
+
+            doc.addPage();
+            const pageNumber = doc.internal.getNumberOfPages();
+            const newY = addPdfHeader(doc, pageNumber) + 5;
+            return newY;
+        }
+
+        function addWrappedText(doc, text, x, y, maxWidth, lineHeight, options = {}) {
+            const fontSize = options.fontSize || 10;
+            const fontStyle = options.fontStyle || 'normal';
+            const color = options.color || PDF_THEME.text;
+            const paragraphGap = options.paragraphGap ?? 2.5;
+            const firstLineIndent = options.firstLineIndent || 0;
+
+            doc.setFont('helvetica', fontStyle);
+            doc.setFontSize(fontSize);
+            setTextColorHex(doc, color);
+
+            const paragraphs = String(text || '').split(/\n+/);
+
+            paragraphs.forEach(paragraph => {
+                const clean = paragraph.trim();
+                if (!clean) {
+                    y += lineHeight;
+                    return;
+                }
+
+                const lines = doc.splitTextToSize(clean, maxWidth);
+
+                lines.forEach((line, index) => {
+                    y = checkPageBreak(doc, y, lineHeight + 1);
+                    doc.setFont('helvetica', fontStyle);
+                    doc.setFontSize(fontSize);
+                    setTextColorHex(doc, color);
+
+                    const lineX = index === 0 && firstLineIndent ? x + firstLineIndent : x;
+                    const lineMax = index === 0 && firstLineIndent ? maxWidth - firstLineIndent : maxWidth;
+                    doc.text(line, lineX, y, {
+                        maxWidth: lineMax
+                    });
+                    y += lineHeight;
+                });
+
+                y += paragraphGap;
+            });
+
+            return y;
+        }
+
+        function addSectionTitle(doc, title, y) {
+            y = checkPageBreak(doc, y, 12);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            setTextColorHex(doc, PDF_THEME.blue);
+            doc.text(title, PDF_LAYOUT.marginLeft, y);
+
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.2);
+            doc.line(PDF_LAYOUT.marginLeft, y + 2, PDF_LAYOUT.pageWidth - PDF_LAYOUT.marginRight, y + 2);
+
+            return y + 7;
+        }
+
+        function addSubsectionTitle(doc, title, y) {
+            y = checkPageBreak(doc, y, 9);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10.5);
+            setTextColorHex(doc, PDF_THEME.text);
+            doc.text(title, PDF_LAYOUT.marginLeft, y);
+
+            return y + 5;
+        }
+
+        function addInfoBox(doc, title, text, y, options = {}) {
+            const x = PDF_LAYOUT.marginLeft;
+            const width = PDF_LAYOUT.contentWidth;
+            const padding = 4;
+            const titleHeight = title ? 5 : 0;
+            const lineHeight = options.lineHeight || 4.5;
+            const fontSize = options.fontSize || 9;
+            const fill = options.fill || PDF_THEME.lightBlue;
+            const border = options.border || PDF_THEME.line;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            const lines = doc.splitTextToSize(String(text || ''), width - padding * 2);
+            const height = padding + titleHeight + lines.length * lineHeight + padding;
+
+            y = checkPageBreak(doc, y, height + 4);
+
+            setFillColorHex(doc, fill);
+            setDrawColorHex(doc, border);
+            doc.setLineWidth(0.2);
+            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+
+            let textY = y + padding + 3;
+            if (title) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9.5);
+                setTextColorHex(doc, PDF_THEME.blue);
+                doc.text(title, x + padding, textY);
+                textY += 5;
+            }
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(fontSize);
+            setTextColorHex(doc, PDF_THEME.text);
+            lines.forEach(line => {
+                doc.text(line, x + padding, textY);
+                textY += lineHeight;
+            });
+
+            return y + height + 5;
+        }
+
+        function addIdentificationBox(doc, data, y) {
+            const x = PDF_LAYOUT.marginLeft;
+            const width = PDF_LAYOUT.contentWidth;
+            const padding = 4;
+            const height = 43;
+            const colGap = 6;
+            const colWidth = (width - padding * 2 - colGap) / 2;
+            const leftX = x + padding;
+            const rightX = leftX + colWidth + colGap;
+
+            y = checkPageBreak(doc, y, height + 4);
+
+            setFillColorHex(doc, PDF_THEME.white);
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.25);
+            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+
+            function field(label, value, fx, fy, maxWidth) {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8.8);
+                setTextColorHex(doc, PDF_THEME.blue);
+                doc.text(label, fx, fy);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8.8);
+                setTextColorHex(doc, PDF_THEME.text);
+                const lines = doc.splitTextToSize(String(value || ''), maxWidth);
+                doc.text(lines, fx + 24, fy, {
+                    maxWidth: maxWidth - 24
+                });
+            }
+
+            field('Interessado(a):', data.name, leftX, y + 9, colWidth);
+            field('Idade:', data.age, rightX, y + 9, colWidth);
+            field('Data:', data.dateBR, leftX, y + 17, colWidth);
+            field('Documento:', 'Relatório psicoeducativo de rastreio de esquemas', rightX, y + 17, colWidth);
+            field('Finalidade:', 'Apoio à reflexão clínica e discussão em psicoterapia', leftX, y + 27, width - padding * 2);
+            field('Cidade/Data:', data.cityDate, leftX, y + 36, width - padding * 2);
+
+            return y + height + 7;
+        }
+
+        function addClinicalBox(doc, entry, y) {
+            const info = schemaPsycho[entry.schema.id];
+            const x = PDF_LAYOUT.marginLeft;
+            const width = PDF_LAYOUT.contentWidth;
+            const padding = 4;
+            const focused = getFocusedPsychoeducation(entry);
+            const title = `${entry.schema.nome} | Média ${entry.mean.toFixed(2)} | ${entry.styleLabel}`;
+            const intro = `Domínio: ${entry.schema.dominio}. ${entry.interpretacao}`;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.3);
+            const linesIntro = doc.splitTextToSize(intro, width - padding * 2);
+            const linesFocus = doc.splitTextToSize(focused, width - padding * 2);
+            const definition = info ? `${info.definicao} ${info.origem}` : '';
+            const linesDef = definition ? doc.splitTextToSize(definition, width - padding * 2) : [];
+
+            const height = 12 + (linesIntro.length + linesDef.length + linesFocus.length) * 4.4 + 8;
+            y = checkPageBreak(doc, y, Math.min(height + 5, 110));
+
+            setFillColorHex(doc, '#FFFFFF');
+            setDrawColorHex(doc, PDF_THEME.line);
+            doc.setLineWidth(0.25);
+            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+
+            setFillColorHex(doc, PDF_THEME.active);
+            doc.rect(x, y, 2.2, height, 'F');
+
+            let textY = y + 7;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10.2);
+            setTextColorHex(doc, PDF_THEME.active);
+            doc.text(title, x + padding, textY);
+
+            textY += 6;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.3);
+            setTextColorHex(doc, PDF_THEME.text);
+
+            linesIntro.forEach(line => {
+                doc.text(line, x + padding, textY);
+                textY += 4.4;
+            });
+
+            if (linesDef.length) {
+                textY += 1;
+                linesDef.forEach(line => {
+                    doc.text(line, x + padding, textY);
+                    textY += 4.4;
+                });
+            }
+
+            textY += 1;
+            linesFocus.forEach(line => {
+                doc.text(line, x + padding, textY);
+                textY += 4.4;
+            });
+
+            return y + height + 5;
+        }
+
+        function addResultsTable(doc, results, y) {
+            const entries = getOrderedResults(results);
+            const x = PDF_LAYOUT.marginLeft;
+            const widths = [40, 43, 18, 22, 43];
+            const headers = ['Esquema', 'Domínio', 'Média', 'Status', 'Estilo'];
+            const tableWidth = widths.reduce((acc, cur) => acc + cur, 0);
+
+            function drawHeader(currentY) {
+                currentY = checkPageBreak(doc, currentY, 9);
+                setFillColorHex(doc, PDF_THEME.tableHead);
+                setDrawColorHex(doc, PDF_THEME.line);
+                doc.setLineWidth(0.2);
+                doc.rect(x, currentY, tableWidth, 7, 'FD');
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8.2);
+                setTextColorHex(doc, PDF_THEME.blue);
+
+                let cx = x;
+                headers.forEach((header, index) => {
+                    doc.text(header, cx + 1.5, currentY + 4.8);
+                    cx += widths[index];
+                });
+
+                return currentY + 7;
+            }
+
+            y = drawHeader(y);
+
+            entries.forEach((entry, rowIndex) => {
+                const row = [
+                    entry.schema.nome,
+                    entry.schema.dominio,
+                    entry.mean.toFixed(2),
+                    getStatusLabel(entry.status),
+                    entry.styleLabel
+                ];
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.3);
+
+                const cellLines = row.map((value, index) => doc.splitTextToSize(String(value), widths[index] - 3));
+                const maxLines = Math.max(...cellLines.map(lines => lines.length));
+                const rowHeight = Math.max(7, maxLines * 3.4 + 3);
+
+                if (y + rowHeight > PDF_LAYOUT.contentBottom) {
+                    doc.addPage();
+                    addPdfHeader(doc, doc.internal.getNumberOfPages());
+                    y = PDF_LAYOUT.compactHeaderBottom + 5;
+                    y = drawHeader(y);
+                }
+
+                if (rowIndex % 2 === 1) {
+                    setFillColorHex(doc, '#FAFBFC');
+                    doc.rect(x, y, tableWidth, rowHeight, 'F');
+                }
+
+                setDrawColorHex(doc, PDF_THEME.line);
+                doc.setLineWidth(0.15);
+
+                let cx = x;
+                widths.forEach(width => {
+                    doc.rect(cx, y, width, rowHeight, 'S');
+                    cx += width;
+                });
+
+                cx = x;
+                row.forEach((value, index) => {
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(7.3);
+
+                    if (index === 3) {
+                        setTextColorHex(doc, getStatusColor(entry.status));
+                        doc.setFont('helvetica', 'bold');
+                    } else {
+                        setTextColorHex(doc, PDF_THEME.text);
+                    }
+
+                    const lines = cellLines[index];
+                    doc.text(lines, cx + 1.5, y + 4, {
+                        maxWidth: widths[index] - 3
+                    });
+                    cx += widths[index];
+                });
+
+                y += rowHeight;
+            });
+
+            return y + 6;
+        }
+
+        function addScoresBars(doc, results, y) {
+            const entries = getOrderedResults(results);
+            const x = PDF_LAYOUT.marginLeft;
+            const labelWidth = 54;
+            const barX = x + labelWidth + 4;
+            const barWidth = 82;
+            const rowHeight = 6;
+            const maxScore = 6;
+
+            y = checkPageBreak(doc, y, 18);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Escala visual: 0 a 6. As cores indicam status do esquema.', x, y);
+            y += 6;
+
+            entries.forEach(entry => {
+                y = checkPageBreak(doc, y, rowHeight + 2);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7.2);
+                setTextColorHex(doc, PDF_THEME.text);
+                const nameLines = doc.splitTextToSize(entry.schema.nome, labelWidth);
+                doc.text(nameLines.slice(0, 1), x, y + 3.5);
+
+                setFillColorHex(doc, '#E8ECEF');
+                doc.roundedRect(barX, y, barWidth, 3.2, 1.2, 1.2, 'F');
+
+                const filled = Math.max(0, Math.min(barWidth, (entry.mean / maxScore) * barWidth));
+                setFillColorHex(doc, getStatusColor(entry.status));
+                doc.roundedRect(barX, y, filled, 3.2, 1.2, 1.2, 'F');
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(7.2);
+                setTextColorHex(doc, PDF_THEME.text);
+                doc.text(entry.mean.toFixed(2), barX + barWidth + 4, y + 3.2);
+
+                y += rowHeight;
+            });
+
+            return y + 5;
+        }
+
+        function addSignatureBlock(doc, y, data) {
+            y = checkPageBreak(doc, y, 38);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            setTextColorHex(doc, PDF_THEME.text);
+            doc.text(data.cityDate + '.', PDF_LAYOUT.marginLeft, y);
+            y += 18;
+
+            const center = PDF_LAYOUT.pageWidth / 2;
+            setDrawColorHex(doc, PDF_THEME.text);
+            doc.setLineWidth(0.25);
+            doc.line(center - 42, y, center + 42, y);
+
+            y += 6;
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            setTextColorHex(doc, PDF_THEME.text);
+            doc.text('Richelmy Murta∴ Pinto', center, y, {
+                align: 'center'
+            });
+
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9.5);
+            doc.text('Psicólogo Clínico – CRP 04/54.383', center, y, {
+                align: 'center'
+            });
+
+            return y + 8;
+        }
+
+        function generatePdfReport() {
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+                alert('Não foi possível carregar a biblioteca de PDF. Verifique sua conexão e tente novamente.');
+                return;
+            }
+
+            const data = buildPdfData();
+            if (!data || !data.results) {
+                alert('Gere os resultados antes de baixar o relatório.');
+                return;
+            }
+
+            const doc = new window.jspdf.jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+                compress: true
+            });
+
+            let y = addPdfHeader(doc, 1);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            setTextColorHex(doc, PDF_THEME.blue);
+            doc.text('Mapa de Esquemas – Inventário de Padrões Emocionais', PDF_LAYOUT.pageWidth / 2, y, {
+                align: 'center'
+            });
+
+            y += 7;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            setTextColorHex(doc, PDF_THEME.muted);
+            doc.text('Relatório psicoeducativo de rastreio clínico', PDF_LAYOUT.pageWidth / 2, y, {
+                align: 'center'
+            });
+
+            y += 8;
+
+            y = addInfoBox(
+                doc,
+                'Nota de uso técnico',
+                'Este relatório tem finalidade psicoeducativa e serve como apoio à reflexão clínica em psicoterapia. Os resultados são indicativos e não constituem diagnóstico psicológico, psiquiátrico ou médico. A interpretação adequada depende da integração com entrevista clínica, história de vida, contexto atual e acompanhamento profissional. Em caso de sofrimento intenso, risco à integridade ou urgência emocional, recomenda-se buscar imediatamente serviços de saúde, emergência ou rede de apoio local.',
+                y,
+                {
+                    fontSize: 9,
+                    lineHeight: 4.5
+                }
+            );
+
+            y = addIdentificationBox(doc, data, y);
+
+            y = addSectionTitle(doc, '1. Apresentação', y);
+            y = addWrappedText(
+                doc,
+                'O Mapa de Esquemas – Inventário de Padrões Emocionais é uma ferramenta psicoeducativa de rastreio, organizada para apoiar a identificação de padrões emocionais compatíveis com Esquemas Iniciais Desadaptativos. Os esquemas não descrevem a pessoa em sua totalidade; eles indicam hipóteses de funcionamento emocional que podem ser discutidas em psicoterapia.\n\nOs estilos de enfrentamento apontam modos habituais de lidar com a dor emocional ativada pelo esquema. A resignação tende a aceitar o padrão como verdade; a evitação reduz o contato com emoções, situações ou vínculos ativadores; a hipercompensação reage no extremo oposto, muitas vezes com rigidez ou excesso de controle.',
+                PDF_LAYOUT.marginLeft,
+                y,
+                PDF_LAYOUT.contentWidth,
+                5.2,
+                {
+                    firstLineIndent: 6
+                }
+            );
+
+            y = addSectionTitle(doc, '2. Síntese interpretativa', y);
+            const styleSummary = countActiveStyles(data.active);
+            const synthesisName = data.name === 'Não informado' ? 'A pessoa avaliada' : data.name;
+            const synthesisText =
+                `${synthesisName} apresentou ${data.active.length} esquema(s) ativo(s) e ${data.latent.length} esquema(s) latente(s). Entre os esquemas ativos, a distribuição de estilos predominantes foi: ${styleSummary}. Esses dados sugerem hipóteses clínicas iniciais e devem ser interpretados com cautela, considerando história de vida, contexto atual, sofrimento relatado, vínculos significativos e objetivos terapêuticos.\n\nA presença de esquemas ativos não deve ser compreendida como diagnóstico. Ela pode indicar áreas de maior sensibilidade emocional, padrões de repetição ou necessidades emocionais que merecem investigação clínica. Já os esquemas latentes podem funcionar como vulnerabilidades em segundo plano, especialmente em períodos de estresse, perdas, conflitos, transições ou sobrecarga.`;
+
+            y = addWrappedText(doc, synthesisText, PDF_LAYOUT.marginLeft, y, PDF_LAYOUT.contentWidth, 5.2, {
+                firstLineIndent: 6
+            });
+
+            y = addSectionTitle(doc, '3. Esquemas ativos', y);
+
+            if (data.active.length === 0) {
+                y = addInfoBox(
+                    doc,
+                    'Resultado',
+                    'Nenhum esquema apareceu claramente ativo neste momento. Ainda assim, os esquemas latentes e o padrão geral de respostas podem ser úteis para reflexão clínica em psicoterapia.',
+                    y,
+                    {
+                        fill: '#F8FAFC'
+                    }
+                );
+            } else {
+                data.active.forEach(entry => {
+                    y = addClinicalBox(doc, entry, y);
+                });
+            }
+
+            y = addSectionTitle(doc, '4. Esquemas latentes', y);
+
+            if (data.latent.length === 0) {
+                y = addWrappedText(
+                    doc,
+                    'Nenhum esquema apareceu como latente neste momento. Essa leitura deve ser compreendida apenas dentro dos limites do instrumento e das respostas fornecidas.',
+                    PDF_LAYOUT.marginLeft,
+                    y,
+                    PDF_LAYOUT.contentWidth,
+                    5.2
+                );
+            } else {
+                y = addWrappedText(
+                    doc,
+                    'Os esquemas latentes podem funcionar como vulnerabilidades em segundo plano, sendo ativados por contextos específicos, estresse, perdas, conflitos, sobrecarga ou relações emocionalmente significativas.',
+                    PDF_LAYOUT.marginLeft,
+                    y,
+                    PDF_LAYOUT.contentWidth,
+                    5.2
+                );
+
+                data.latent.forEach(entry => {
+                    y = checkPageBreak(doc, y, 6);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(9.2);
+                    setTextColorHex(doc, PDF_THEME.text);
+                    doc.text(
+                        `• ${entry.schema.nome} | Média ${entry.mean.toFixed(2)} | ${entry.schema.dominio} | Estilo: ${entry.styleLabel}`,
+                        PDF_LAYOUT.marginLeft + 4,
+                        y,
+                        {
+                            maxWidth: PDF_LAYOUT.contentWidth - 4
+                        }
+                    );
+                    y += 5;
+                });
+
+                y += 2;
+            }
+
+            y = addSectionTitle(doc, '5. Tabela completa dos resultados', y);
+            y = addResultsTable(doc, data.results, y);
+
+            y = addSectionTitle(doc, '6. Representação visual dos escores', y);
+            y = addScoresBars(doc, data.results, y);
+
+            y = addSectionTitle(doc, '7. Psicoeducação geral sobre esquemas e estilos', y);
+            y = addWrappedText(
+                doc,
+                'Os Esquemas Iniciais Desadaptativos costumam se formar a partir da interação entre temperamento, experiências repetidas e necessidades emocionais básicas que não foram suficientemente atendidas. Eles funcionam como mapas internos de previsão: ajudam a interpretar o mundo, mas podem manter respostas antigas mesmo quando a situação atual já é diferente.\n\nUm esquema ativo indica maior frequência ou intensidade do padrão no momento da aplicação. Um esquema latente sugere uma vulnerabilidade que pode ser acionada em circunstâncias específicas. Um esquema ausente indica que aquele padrão não apareceu como foco relevante neste rastreio, sem excluir a necessidade de avaliação clínica mais ampla.\n\nOs estilos de enfrentamento mostram como a pessoa tende a lidar com a ativação do esquema. Na resignação, o padrão é aceito e repetido. Na evitação, a pessoa se afasta de emoções, vínculos ou situações que poderiam ativar desconforto. Na hipercompensação, há uma reação no extremo oposto, frequentemente com rigidez, controle ou intensidade defensiva. O trabalho psicoterapêutico busca reconhecer esses ciclos e construir respostas mais saudáveis, contextualizadas e compatíveis com a vida atual.',
+                PDF_LAYOUT.marginLeft,
+                y,
+                PDF_LAYOUT.contentWidth,
+                5.2,
+                {
+                    firstLineIndent: 6
+                }
+            );
+
+            y = addSectionTitle(doc, '8. Psicoeducação específica dos esquemas ativos', y);
+
+            if (data.active.length === 0) {
+                y = addWrappedText(
+                    doc,
+                    'Como nenhum esquema apareceu claramente ativo, esta seção não apresenta psicoeducação específica por esquema. A discussão clínica pode priorizar o padrão geral de respostas e eventuais esquemas latentes.',
+                    PDF_LAYOUT.marginLeft,
+                    y,
+                    PDF_LAYOUT.contentWidth,
+                    5.2
+                );
+            } else {
+                data.active.forEach(entry => {
+                    const info = schemaPsycho[entry.schema.id];
+                    y = addSubsectionTitle(doc, `${entry.schema.nome} – ${entry.styleLabel}`, y);
+                    const text = `${info ? info.definicao + ' ' + info.origem + '\n\n' : ''}${getFocusedPsychoeducation(entry)}`;
+                    y = addWrappedText(doc, text, PDF_LAYOUT.marginLeft, y, PDF_LAYOUT.contentWidth, 5.0, {
+                        firstLineIndent: 6
+                    });
+                });
+            }
+
+            y = addSectionTitle(doc, '9. Recomendações de uso clínico', y);
+            y = addInfoBox(
+                doc,
+                'Orientações de integração terapêutica',
+                'Leve este relatório para a sessão de psicoterapia e utilize os esquemas ativos como hipóteses de trabalho, não como rótulos. Observe gatilhos cotidianos, pensamentos automáticos, emoções, sensações corporais e comportamentos associados. O objetivo clínico não é confirmar defeitos pessoais, mas compreender padrões aprendidos e construir respostas mais saudáveis com acompanhamento profissional. Evite usar este relatório para autodiagnóstico ou para rotular terceiros.',
+                y,
+                {
+                    fill: '#F8FAFC',
+                    fontSize: 9,
+                    lineHeight: 4.5
+                }
+            );
+
+            y = addSectionTitle(doc, '10. Nota ética e limites do instrumento', y);
+            y = addWrappedText(
+                doc,
+                'Este instrumento possui finalidade psicoeducativa e de rastreio. Seus resultados não substituem avaliação psicológica formal, entrevista clínica, psicoterapia, consulta médica ou psiquiátrica. A interpretação deve considerar história de vida, contexto atual, sofrimento relatado, funcionamento global e objetivos terapêuticos. Em situações de risco, urgência emocional ou sofrimento intenso, recomenda-se buscar atendimento imediato em serviços de saúde, emergência ou rede de apoio local.',
+                PDF_LAYOUT.marginLeft,
+                y,
+                PDF_LAYOUT.contentWidth,
+                5.2,
+                {
+                    firstLineIndent: 6
+                }
+            );
+
+            y = addSignatureBlock(doc, y + 4, data);
+
+            const totalPages = doc.internal.getNumberOfPages();
+            for (let page = 1; page <= totalPages; page++) {
+                doc.setPage(page);
+                addPdfFooter(doc, page, totalPages);
+            }
+
+            const safeName = sanitizeFileName(data.name === 'Não informado' ? 'Paciente' : data.name);
+            const dateForFile = getIsoDateSafe(data.applicationDate);
+            const fileName = `Relatorio_Mapa_de_Esquemas_${safeName}_${dateForFile}.pdf`;
+
+            doc.save(fileName);
+        }
+
+        if (downloadPdfReportBtn) {
+            downloadPdfReportBtn.addEventListener('click', generatePdfReport);
+        }
+    
