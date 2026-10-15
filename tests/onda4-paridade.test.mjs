@@ -12,7 +12,7 @@ const expectedOriginalBlobSha = '43c574deb67d690d9de3aabf72dca436c22ea519';
 function gitBlobSha(content) {
   const body = Buffer.from(content, 'utf8');
   return createHash('sha1')
-    .update(Buffer.from('blob ' + body.length + '\\0'.replace('\\0', '\0'), 'utf8'))
+    .update(Buffer.from('blob ' + body.length + String.fromCharCode(0), 'utf8'))
     .update(body)
     .digest('hex');
 }
